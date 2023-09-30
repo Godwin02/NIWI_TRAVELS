@@ -1,0 +1,130 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Your head content here -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content:start;
+            align-items:center;
+            height: 100vh;
+            background-image: url("{% static 'Niwi_Travels/images/bg_2.jpg' %}");
+            background-size: cover; /* Ensure the background image covers the entire viewport */
+        }
+
+        .top-bar {
+            background-color: #113156;
+            color: white;
+            display: flex;
+            justify-content: flex-end; /* Align content to the right */
+            padding: 10px 20px;
+        }
+
+        .logout-button {
+            background-color: #cd1100;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px; /* Add margin to separate from other content */
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .items {
+            background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background */
+            color: white;
+            display: flex; /* Change display to flex to align items horizontally */
+            flex-direction: column; /* Stack items vertically */
+            text-align: center; /* Center-align the items */
+            padding: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            margin: 10px; /* Add margin to space the items */
+        }
+
+        .items a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px; /* Increase the padding to increase the box size */
+            transition: background-color 0.3s, color 0.3s;
+            border: 1px solid white; /* Add a border to create separate boxes */
+            border-radius: 10px; /* Increase the border radius for rounded corners */
+        }
+
+        .items a:hover {
+            background-color: #cd1100;
+        }
+
+        .scroll-container {
+            overflow:hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #113156;
+            color: white;
+        }
+
+        .scrolling-text {
+            white-space: nowrap;
+            animation: scroll 20s linear infinite;
+            padding: 10px;
+            background-image: url("{% static 'Niwi_Travels/images/niwilogo.jpg' %}");
+            background-repeat: no-repeat;
+            background-size: contain; /* Adjust this based on your logo size */
+            background-position: left center; /* Align the logo to the left */
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="items">
+        <ul>
+            <a href="#upcoming-packages">Upcoming Packages</a>
+        </ul>
+        <ul>
+            <a href="#profile">Profile</a>
+        </ul>
+        <ul>
+            <a href="#booking-history">Booking History</a>
+        </ul>
+        <ul>
+            <a href="#available-destinations">Available Destinations</a>
+        </ul>
+    </div>
+    
+        <div class="scroll-container">
+            <h1 class="scrolling-text">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Welcome To NIWI TRAVELS, {{ user.username }}</h1>
+            <div class="top-bar">
+                {% if user.is_authenticated %}
+                    <a href="logout"> <button class="logout-button">Logout</button></a>
+                {% else %}
+                <a href="/login"> <button class="logout-button">Login</button></a>
+                {% endif %}
+            </div>
+        </div>
+    
+        
+   
+
+    <!-- Add footer content if needed -->
+
+    <!-- Include your JavaScript files at the end of the body section -->
+</body>
+</html>
