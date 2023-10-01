@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.db import IntegrityError
 from django.urls import reverse
+from .forms import RegistrationForm
 from .models import CustomUser,UserProfile
-from .forms import SignupForm
+
 from django.contrib import messages
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate ,login as auth_login,logout
@@ -33,31 +34,36 @@ def register(request):
     #          return render(request, 'registration.html', {'error_message': error_message})
 
     # return render(request, 'registration.html')
-
     if request.method == 'POST':
+        form = RegistrationForm(request.POST)
         username = request.POST.get('username', None)
         email = request.POST.get('email', None)
         
         password = request.POST.get('password', None)
         confirm_password = request.POST.get('confirm_password', None)
+        user_type= request.POST.get('user_type',None)
         # role = CustomUser.CUSTOMER
         if username and email and  password:
-            if CustomUser.objects.filter(email=email,username=username).exists():
-                messages.success(request,("Email is already registered."))
+            if CustomUser.objects.filter(email=email).exists():
+                    messages.success(request,("Email is already registered."))
+            elif CustomUser.objects.filter(username=username).exists():
+                   messages.success(request,("Username is already registered."))
             
             elif password!=confirm_password:
-                messages.success(request,("Password's Don't Match, Enter correct Password"))
+                    messages.success(request,("Password's Don't Match, Enter correct Password"))
             else:
-                user = CustomUser(username=username, email=email)
-                user.set_password(password)  # Set the password securely
-                user.is_active=True
-                user.save()
-                user_profile = UserProfile(user=user)
-                user_profile.save()
+                    user = CustomUser(username=username, email=email,user_type=user_type)
+                    user.set_password(password)  # Set the password securely
+                    user.is_active=True
+                    user.save()
+                    user_profile = UserProfile(user=user)
+                    user_profile.save()
                 # activateEmail(request, user, email)
-                return redirect('login')  
-            
-    return render(request, 'registration.html')
+                    return redirect('login')
+      
+    else:
+            form = RegistrationForm()        
+    return render(request, 'registration.html',{'form':form})
 def login(request):
     if request.method == 'POST':
         username = request.POST["username"]
@@ -80,14 +86,14 @@ def login(request):
         
             if user is not None:
                 auth_login(request,user)
-                if request.user.user_type ==  CustomUser.TRAVELER:
+                if request.user.user_type == 'Traveller':
                     return redirect('loginview')
                     #return render(request,'loginview.html', {'user':user})
             
-                # elif request.user.user_typ == CustomUser.VENDOR:
-                #     print("user is therapist")
+                elif request.user.user_type == 'Driver':
+                    print("user is Driver")
                 #     return redirect(reverse('therapist'))
-                elif request.user.user_type == CustomUser.ADMIN:
+                elif request.user.user_type == 'Admin':
                     print("user is admin")                   
                     return redirect('http://127.0.0.1:8000/admin/')
                 # else:

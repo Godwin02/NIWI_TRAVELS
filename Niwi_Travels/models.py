@@ -1,3 +1,4 @@
+
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import AbstractUser,BaseUserManager
@@ -34,19 +35,30 @@ class UserManager(BaseUserManager):
         return user
 
 class CustomUser(AbstractUser):
-    ADMIN=1
-    TRAVELER=2
-    DRIVER=3
+    # ADMIN=1
+    # TRAVELER=2
+    # DRIVER=3
     
 
-    USER_TYPES = (
-        (ADMIN, 'Admin'),
-        (TRAVELER, 'Traveler'),
-        (DRIVER, 'Driver'),
+    # USER_TYPES = (
+    #     (ADMIN, 'Admin'),
+    #     (TRAVELER, 'Traveler'),
+    #     (DRIVER, 'Driver'),
         
+    # )
+
+    # user_type = models.PositiveSmallIntegerField(choices=USER_TYPES, default='2')
+    # TRAVELER = 'Traveller'
+    # DRIVER = 'Driver'
+    # ADMIN = 'Admin'
+
+    USER_TYPES = (
+        ('Choose','Choose'),
+        ('Traveller', 'Traveller'),
+        ('Driver', 'Driver'),
     )
 
-    user_type = models.PositiveSmallIntegerField(choices=USER_TYPES, default='2')
+    user_type = models.CharField(max_length=20, choices=USER_TYPES)
     username=models.CharField(max_length=50,unique=True)
     email = models.EmailField(max_length=100, unique=True)
     password = models.CharField(max_length=128)
@@ -65,7 +77,10 @@ class CustomUser(AbstractUser):
 
     def has_module_perms(self, app_label):
         return True
-      
+
+
+
+
 class UserProfile(models.Model):
 
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -94,9 +109,9 @@ class UserProfile(models.Model):
         return self.user.username
     
     def get_role(self): 
-        if self.user_type == 2:
+        if self.user_type == 'Traveler':
             user_role = 'Traveler'
-        elif self.user_type == 3:
+        elif self.user_type == 'Driver':
             user_role = 'Driver'
         return user_role
 # # Create your models here.
