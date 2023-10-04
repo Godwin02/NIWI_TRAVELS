@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard</title>
+    <link rel="icon" href="{'% static Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        /* Navbar styles */
+        .navbar {
+            background-color: #113156;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-size: 24px;
+        }
+
+        .navbar-brand img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #fff;
+            transition: color 0.3s;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #cd1100;
+        }
+
+        .navbar-nav .nav-link::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #cd1100;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .navbar-nav .nav-link:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Background image */
+        body {
+            background-image: url("{% static 'Niwi_Travels/images/bg_2.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Floating heading animation */
+        .animated-heading {
+            animation: floatHeading 10s linear infinite;
+        }
+
+        @keyframes floatHeading {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Main content styles */
+        .container {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'Niwi_Travels/images/niwilogo.jpg' %}" alt="Logo">
+            NIWI TRAVELS
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href='/home'>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Upcoming Trips</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">History</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-toggle="dropdown">
+                        My Account
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">View Profile</a>
+                        <a class="dropdown-item" href="#">Edit Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout" id="logout-link">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Add your content here -->
+        <h1 class="animated-heading">Welcome {{ user.username }} Driver!</h1>
+        <p>This is your driver dashboard. You can customize this section to display relevant driver-related information.</p>
+    </div>
+
+    <!-- Bootstrap JS and jQuery (Make sure to include them before the closing </body> tag) -->
+    <script>
+        // Wait for the document to be fully loaded
+        document.addEventListener("DOMContentLoaded", function () {
+            // Find the logout button by its ID
+            var logoutButton = document.getElementById("logout-link");
+    
+            // Add a click event listener to the logout button
+            logoutButton.addEventListener("click", function () {
+                // Reload the page after a short delay (you can adjust the delay as needed)
+                setTimeout(function () {
+                    location.reload();
+                }, 1000); // Reload after 1 second (1000 milliseconds)
+            });
+        });
+    </script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

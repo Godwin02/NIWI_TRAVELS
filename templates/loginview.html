@@ -4,6 +4,8 @@
 <html lang="en">
 <head>
     <!-- Your head content here -->
+    <link rel="icon" href="{% static 'Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
+
     <style>
         body {
             margin: 0;
@@ -112,11 +114,11 @@
         <div class="scroll-container">
             <h1 class="scrolling-text">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Welcome To NIWI TRAVELS, {{ user.username }}</h1>
             <div class="top-bar">
-                {% if user.is_authenticated %}
-                    <a href="logout"> <button class="logout-button">Logout</button></a>
-                {% else %}
-                <a href="/login"> <button class="logout-button">Login</button></a>
-                {% endif %}
+                <!-- {% if user.is_authenticated %} -->
+                    <a href="/logout" id="logout-link"> <button class="logout-button">Logout</button></a>
+                <!-- {% else %} -->
+                <!-- <a href="/log"> <button class="logout-button">Login</button></a>
+                {% endif %} -->
             </div>
         </div>
     
@@ -124,6 +126,22 @@
    
 
     <!-- Add footer content if needed -->
+    <script>
+        // Wait for the document to be fully loaded
+        document.addEventListener("DOMContentLoaded", function () {
+            // Find the logout button by its ID
+            var logoutButton = document.getElementById("logout-link");
+    
+            // Add a click event listener to the logout button
+            logoutButton.addEventListener("click", function () {
+                // Reload the page after a short delay (you can adjust the delay as needed)
+                setTimeout(function () {
+                    location.reload();
+                }, 1000); // Reload after 1 second (1000 milliseconds)
+            });
+        });
+    </script>
+    
 
     <!-- Include your JavaScript files at the end of the body section -->
 </body>
