@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.urls import reverse
 from .forms import RegistrationForm
 from .models import CustomUser,UserProfile
-
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate ,login as auth_login,logout
@@ -59,12 +59,19 @@ def register(request):
                     user_profile = UserProfile(user=user)
                     user_profile.save()
                 # activateEmail(request, user, email)
-                    return redirect('login')
+                    return redirect('log')
       
     else:
             form = RegistrationForm()        
     return render(request, 'registration.html',{'form':form})
 def login(request):
+    
+    if 'username' in request.session:
+         return redirect('/loginview')
+    if 'username' in request.session:
+         return redirect('/driver')
+    if 'username' in request.session:
+         return redirect('http://127.0.0.1:8000/admin/')
     if request.method == 'POST':
         username = request.POST["username"]
         password = request.POST["password"]
@@ -86,15 +93,21 @@ def login(request):
         
             if user is not None:
                 auth_login(request,user)
+                print(request.user.user_type,"1")
                 if request.user.user_type == 'Traveller':
-                    return redirect('loginview')
+                    request.session["username"] = user.username
+                    # print(request.session["username"])
+                    # if request.session["username"]:
+                    return redirect('/loginview', {'username': username})
                     #return render(request,'loginview.html', {'user':user})
             
                 elif request.user.user_type == 'Driver':
-                    print("user is Driver")
+                    request.session["username"] = user.username
+                    return redirect('/driver',{'username': username})
                 #     return redirect(reverse('therapist'))
-                elif request.user.user_type == 'Admin':
-                    print("user is admin")                   
+                elif request.user.user_type == '1':
+                    print("user is admin")
+                    request.session["username"] = user.username                   
                     return redirect('http://127.0.0.1:8000/admin/')
                 # else:
                 #     print("user is normal")
@@ -102,12 +115,31 @@ def login(request):
 
             else:
                 messages.success(request,("Invalid Username or Password."))
-                return redirect('login')
+                return redirect('log')
     return render(request, 'login.html')
+
+
+@login_required(login_url='log')
 def loginview(request):
-    return render(request,'loginview.html')
-def log(request):
-     logout(request)
-     return redirect('loginview')
+    if request.user.user_type == 'Traveller':
+    # if request.user.is_authenticated:
+        return render(request,'loginview.html')
+    return redirect('/driver')
+    # return redirect('log')
+@login_required(login_url='log')
+def dri(request):
+    if request.user.user_type == 'Driver':
+    # if request.user.is_authenticated:
+        return render(request,'driver.html')
+    return redirect('/loginview')
+    # return redirect('log')
+def logo(request):
+    if request.user.is_authenticated:
+        # request.session["username"] =""
+        # print(request.session["username"],"2")
+        logout(request)
+    return render(request,'login.html')
+    #  return render(request,'login.html')
+    
 # Create your views here.
 
