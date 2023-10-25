@@ -1,117 +1,35 @@
-
 from django.db import models
-from datetime import date
-from django.contrib.auth.models import AbstractUser,BaseUserManager
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
-
-class UserManager(BaseUserManager):
-    def create_user(self,username, email, password=None):
-        if not email:
-            raise ValueError('User must have an email address')
-
-        user = self.model(
-            email=self.normalize_email(email),
-            username=username,
-          
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self,username, email, password=None):
-        
-        user = self.create_user(
-            email=self.normalize_email(email),
-            password=password,
-            username=username,
-        )
-        user.is_admin = True
-        user.is_active = True
-        user.is_staff = True
-        user.is_superadmin = True
-        user.user_type=1
-        user.save(using=self._db)
-        return user
-
-class CustomUser(AbstractUser):
-    # ADMIN=1
-    # TRAVELER=2
-    # DRIVER=3
+class User(AbstractUser):
+    is_traveller = models.BooleanField(default=True)
+    is_driver = models.BooleanField(default=False)
     
+    def _str_(self):
+         return f"{self.username} ({'Traveller' if self.is_traveller else 'Driver'})"
 
-    # USER_TYPES = (
-    #     (ADMIN, 'Admin'),
-    #     (TRAVELER, 'Traveler'),
-    #     (DRIVER, 'Driver'),
-        
-    # )
-
-    # user_type = models.PositiveSmallIntegerField(choices=USER_TYPES, default='2')
-    # TRAVELER = 'Traveller'
-    # DRIVER = 'Driver'
-    # ADMIN = 'Admin'
-
-    USER_TYPES = (
-        ('Choose','Choose'),
-        ('Traveller', 'Traveller'),
-        ('Driver', 'Driver'),
-    )
-
-    user_type = models.CharField(max_length=20, choices=USER_TYPES)
-    username=models.CharField(max_length=50,unique=True)
-    email = models.EmailField(max_length=100, unique=True)
-    password = models.CharField(max_length=128)
-
-    is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    is_superadmin = models.BooleanField(default=False)
-
-    objects = UserManager()
+class Traveller(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='traveller')
+    first_name = models.CharField(max_length=30,null=True)
+    last_name = models.CharField(max_length=30,null=True)
+    phone_number = models.CharField(max_length=15, null=True)
+    country = models.CharField(max_length=100, null=True)
+    gender = models.CharField(max_length=10, null=True)
+    profile_photo = models.ImageField(blank=True, null=True, upload_to='traveller_profile_photos/')
 
     def _str_(self):
-        return self.username
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return True
-
-
-
-
-class UserProfile(models.Model):
-
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(upload_to='media/profile_picture', blank=True, null=True)
-    address = models.CharField(max_length=50, blank=True, null=True)
-    addressline1 = models.CharField(max_length=50, blank=True, null=True)
-    addressline2 = models.CharField(max_length=50, blank=True, null=True)
-    state = models.CharField(max_length=50, blank=True, null=True)
-    city = models.CharField(max_length=50, blank=True, null=True)
-    pin_code = models.CharField(max_length=50, blank=True, null=True)
-    gender = models.CharField(max_length=50, blank=True, null=True)
-    dob = models.DateField(blank=True, null=True)
-    profile_created_at = models.DateTimeField(auto_now_add=True)
-    profile_modified_at = models.DateTimeField(auto_now=True)
-
-    def calculate_age(self):
-        today = date.today()
-        age = today.year - self.dob.year - ((today.month, today.day) < (self.dob.month, self.dob.day))
-        return age
-    age = property(calculate_age)
-
-    def get_gender_display(self):
-        return dict(self.GENDER_CHOICES).get(self.gender)
-
-    def str(self):
         return self.user.username
     
-    def get_role(self): 
-        if self.user_type == 'Traveler':
-            user_role = 'Traveler'
-        elif self.user_type == 'Driver':
-            user_role = 'Driver'
-        return user_role
-# # Create your models here.
+class Driver(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True,related_name='driver')
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    contact_email = models.EmailField(max_length=254)
+    contact_phone_number = models.CharField(max_length=15)
+    profile_photo = models.ImageField(blank=True, null=True, upload_to='driver_profile_photos/')
+    verification = models.CharField(max_length=20, default='Pending')
+    admin_notes = models.TextField(blank=True, null=True)
+    license = models.FileField(blank=True, null=True, upload_to='college_pdf_copies/')
+
+    def _str_(self):
+        return self.user.username
