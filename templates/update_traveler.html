@@ -1,0 +1,122 @@
+{% extends 'loginview.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Traveler Profile</title>
+
+    <style>
+          .profile-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .profile-table tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .profile-table td {
+        padding: 8px;
+    }
+
+    /* Style labels and input/select elements */
+    .profile-table label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .profile-table input[type="text"],
+    .profile-table input[type="file"],
+    .profile-table select {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .profile-table input[type="text"]:hover,
+    .profile-table input[type="file"]:hover,
+    .profile-table select:hover {
+        border-color: #007BFF;
+    }
+
+    /* Style the submit button */
+    .profile-table button[type="submit"] {
+        background-color: #007BFF;
+        color: white;
+        padding: 12px 20px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .profile-table button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Update Traveler Profile</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table class="profile-table">
+                <tr>
+                    <td><label for="first_name">First Name:</label></td>
+                    <td><input type="text" name="first_name" id="first_name" required></td>
+                </tr>
+                <tr>
+                    <td><label for="last_name">Last Name:</label></td>
+                    <td><input type="text" name="last_name" id="last_name" required></td>
+                </tr>
+                <tr>
+                    <td><label for="phone_number">Phone Number:</label></td>
+                    <td><input type="text" name="phone_number" id="phone_number" required></td>
+                </tr>
+                <tr>
+                    <td><label for="gender">Gender:</label></td>
+                    <td>
+                        <select name="gender" id="gender" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="country">Country:</label></td>
+                    <td><input type="text" name="country" id="country" required></td>
+                </tr>
+                <tr>
+                    <td><label for="profile_photo">Profile Photo:</label></td>
+                    <td><input type="file" name="profile_photo" id="profile_photo"></td>
+                </tr>
+            </table>
+            <button type="submit" id="logout-link">Update Profile</button>
+        </form>
+    </div>
+
+    <script>
+        // Wait for the document to be fully loaded
+        document.addEventListener("DOMContentLoaded", function () {
+            // Find the logout button by its ID
+            var logoutButton = document.getElementById("logout-link");
+    
+            // Add a click event listener to the logout button
+            logoutButton.addEventListener("click", function () {
+                // Reload the page after a short delay (you can adjust the delay as needed)
+                setTimeout(function () {
+                    location.reload();
+                }, 1000); // Reload after 1 second (1000 milliseconds)
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

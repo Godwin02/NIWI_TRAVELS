@@ -32,19 +32,27 @@
   <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
 	    <div class="container">
-	      <a class="navbar-brand" href="index-2.html">NIWI TRAVELS</a>
+			<img src="{% static 'Niwi_Travels/images/niwilogo.jpg' %}" alt="Logo" width="40px" height="35px"> <a class="navbar-brand" href="#">NIWI TRAVELS</a>
 	      <button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 	        <span class="oi oi-menu"></span> Menu
 	      </button>
 
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav nav ml-auto">
-	          <li class="nav-item"><a href="home" class="nav-link"><span>Home</span></a></li>
 	          <li class="nav-item"><a href="#services-section" class="nav-link"><span>Services</span></a></li>
 	          <li class="nav-item"><a href="#about-section" class="nav-link"><span>About</span></a></li>
 	          <li class="nav-item"><a href="#destination-section" class="nav-link"><span>Destination</span></a></li>
+			  {% if user.is_authenticated and user.is_traveller %}
+			  <li class="nav-item"><a href="/logout" class="nav-link" id="logout-link"><span>Logout ({{ user.username }})</span></a></li>
+			  	<li class="nav-item"><a href="/thome" class="nav-link"><span>Home</span></a></li>
+			  	{% elif user.is_authenticated and user.is_driver %}
+				  <li class="nav-item"><a href="/logout" class="nav-link" id="logout-link"><span>Logout ({{ user.username }})</span></a></li>
+			  	<li class="nav-item"><a href="/dhome" class="nav-link"><span>Home</span></a></li>
+
+			  {% else %}
 	          <li class="nav-item"><a href="/log" class="nav-link"><span>Login</span></a></li>
 	          <li class="nav-item"><a href="/register" class="nav-link"><span>Register</span></a></li>
+			  {% endif %}
 	          <li class="nav-item"><a href="#blog-section" class="nav-link"><span>Blog</span></a></li>
 	          <li class="nav-item"><a href="#contact-section" class="nav-link"><span>Contact</span></a></li>
 	        </ul>
@@ -109,7 +117,7 @@
     	<div class="container">
     		<div class="row justify-content-center pb-0 pb-mb-5 pt-5 pt-md-0">
           <div class="col-md-12 heading-section ftco-animate">
-          	<span class="subheading">Sexy &amp; Healthy</span>
+          	<span class="subheading"></span>
             <h2 class="mb-4">Where do you want to go?</h2>
             <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
           </div>
@@ -191,7 +199,7 @@
 			<div class="container">
 				<div class="row justify-content-center pb-5">
           <div class="col-md-12 heading-section text-center ftco-animate">
-          	<span class="subheading">Sexy &amp; Healthy</span>
+          	<span class="subheading"></span>
             <h2 class="mb-4">Our Services</h2>
             <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
           </div>
@@ -241,7 +249,7 @@
     	<div class="container">
     		<div class="row no-gutters d-flex">
     			<div class="col-md-6 col-lg-5 d-flex">
-    				<div class="img d-flex align-self-stretch align-items-center" style="background-image:url({% static 'Niwi_Travels/images/about.jpg' %});">
+					<div class="img d-flex align-self-stretch align-items-center" style="background-image: url('{% static 'Niwi_Travels/images/about.jpg' %}');">
     				</div>
     			</div>
     			<div class="col-md-6 col-lg-7 px-lg-5 py-md-5 bg-darken">
@@ -815,9 +823,9 @@
       </div>
     </section>
 		
-		<section class="ftco-section ftco-no-pt ftco-no-pb">
+		<!-- <section class="ftco-section ftco-no-pt ftco-no-pb">
 			<div id="map" class="bg-white"></div>
-		</section>
+		</section> -->
 
 		<section class="ftco-gallery">
     	<div class="container-fluid px-0">
@@ -872,7 +880,7 @@
         <div class="row mb-5">
           <div class="col-md">
             <div class="ftco-footer-widget mb-4">
-              <h2 class="ftco-heading-2">About <span><a href="index-2.html">Ecoland</a></span></h2>
+              <h2 class="ftco-heading-2">About <span><a href="index-2.html">NIWITRAVELS</a></span></h2>
               <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
               <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
                 <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
@@ -953,6 +961,21 @@
   <script src="{% static 'Niwi_Travels/js/google-map.js' %}"></script>
   
   <script src="{% static 'Niwi_Travels/js/main.js' %}"></script>
+  <script>
+	// Wait for the document to be fully loaded
+	document.addEventListener("DOMContentLoaded", function () {
+		// Find the logout button by its ID
+		var logoutButton = document.getElementById("logout-link");
+
+		// Add a click event listener to the logout button
+		logoutButton.addEventListener("click", function () {
+			// Reload the page after a short delay (you can adjust the delay as needed)
+			setTimeout(function () {
+				location.reload();
+			}, 1000); // Reload after 1 second (1000 milliseconds)
+		});
+	});
+</script>
     
   </body>
 
