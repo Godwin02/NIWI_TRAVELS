@@ -30,6 +30,55 @@ class Driver(models.Model):
     verification = models.CharField(max_length=20, default='Pending')
     admin_notes = models.TextField(blank=True, null=True)
     license = models.FileField(blank=True, null=True, upload_to='college_pdf_copies/')
+    date_of_birth = models.DateField(null=True, blank=True)  # Add date_of_birth field
+    location = models.CharField(max_length=100, null=True, blank=True)  # Add location field
 
     def _str_(self):
         return self.user.username
+    
+
+
+
+
+class TravelPackage(models.Model):
+    STATUS_CHOICES = (
+        ('Running', 'Running'),
+        ('Paused', 'Paused'),
+    )
+    ACCOMMODATION_CHOICES = (
+        ('Included', 'Included'),
+        ('Excluded', 'Excluded'),
+    )
+
+    package_name = models.CharField(max_length=100)
+    description = models.TextField()
+    destination = models.CharField(max_length=100)
+    duration = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    accommodation = models.CharField(max_length=100, choices=ACCOMMODATION_CHOICES,default='Included')
+    # meals = models.CharField(max_length=100)
+    transportation = models.CharField(max_length=100)
+    activities = models.TextField()
+    inclusions = models.TextField()
+    exclusions = models.TextField()
+    images = models.ImageField(upload_to='package_images/')
+    # ratings = models.FloatField()
+    availability = models.PositiveIntegerField()
+    booking_deadline = models.DateField()
+    category = models.CharField(max_length=50)
+    tags = models.CharField(max_length=100)
+    cancellation_policy = models.TextField()
+    # booking_link = models.URLField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Running')
+
+    def __str__(self):
+        return self.package_name
+
+class PackageImage(models.Model):
+    package = models.ForeignKey(TravelPackage, on_delete=models.CASCADE)  # Assuming TravelPackage is your package model
+    image = models.ImageField(upload_to='package_images/')
+
+    def __str__(self):
+        return f"Image for {self.package.package_name}"

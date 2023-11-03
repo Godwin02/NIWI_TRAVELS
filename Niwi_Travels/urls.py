@@ -12,6 +12,9 @@ urlpatterns = [
     path('',views.index,name='home'),
     path('register/',views.register,name='register'),
     path('dregister/',views.drireg,name='dregister'),
+    path('tregister/', views.tregister, name='tregister'),
+    path('activate/<str:uidb64>/<str:token>/', views.activate_email, name='activate_email'),  # Activation view
+
     path('log/',views.login,name='log'),
     path('thome/',views.traveller_home,name='thome'),
     path('dhome/',views.driver_home,name='dhome'),
@@ -30,7 +33,9 @@ urlpatterns = [
     path('user_list/', views.user_list, name='user_list'),
     path('travellers/', views.travellers, name='travellers'),
     path('drivers/', views.drivers, name='drivers'),
-    path('update_user_status/<int:user_id>/', views.update_user_status, name='update_user_status'),
+    path('update-verification-status/<int:user_profile_id>/', views.update_verification_status, name='update_verification_status'),
+    path('approved-users/', views.list_approved_users, name='list_approved_users'),
+
 
 
     
@@ -41,7 +46,18 @@ urlpatterns = [
     
 
     path('activate/<str:uidb64>/<str:token>/', views.activate_email, name='activate_email'),  # Activation view
-    path('deactivate_user/<int:user_id>/', views.deactivate_user, name='deactivate_user'),
+
+
+    
+    path('upload_package/', views.upload_package, name='upload_package'),
+    path('view-packages/', views.view_travel_packages, name='view_packages'),
+    path('edit_package/<int:package_id>/', views.edit_package, name='edit_package'),
+    path('package/<int:package_id>/', views.package_detail, name='package_detail'),
+
+
+
+
+
 
 
  ]
