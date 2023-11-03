@@ -1,0 +1,252 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Package Details</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{% static 'Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
+    
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/open-iconic-bootstrap.min.css' %}"> 
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/animate.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/magnific-popup.css' %}">
+  
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/aos.css' %}">
+  
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/ionicons.min.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/icomoon.css' %}">
+    <link rel="stylesheet" href="{% static 'Niwi_Travels/css/style.css' %}">
+    <style>
+        /* Apply styles to the body element */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Apply styles to the header element (navbar) */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        header a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        /* Apply styles to the main heading */
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        /* Apply styles to the package details section */
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        /* Apply styles to the package images section */
+        h2 {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .image-gallery img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Apply styles to the "Book Now" button */
+        button[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Apply styles to the "Back to Home" link */
+        a {
+            color: #007BFF;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* Media query for responsiveness */
+        @media (max-width: 768px) {
+            .image-gallery {
+                flex-direction: column;
+            }
+            .image-gallery img {
+                width: 100%;
+                max-width: none;
+            }
+        }
+        /* Apply styles to the package details section */
+p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #333;
+    font-family:'Times New Roman', Times, serif; /* Change the color to a darker shade, e.g., #333 (dark gray) */
+}
+.btn-close {
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: #000;
+}
+
+/* Close button on hover */
+.btn-close:hover {
+    color: #555;
+}
+
+/* You can customize the styles further to match your website's design. */
+
+    /* Define custom alert styles */
+    .custom-alert {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-size: 16px;
+        z-index: 9999;
+    }
+    .navbar-logo img {
+        width: 50px;
+        height: 60px;
+        margin-right: 10px;
+    }
+    .profile-image {
+    max-width: 100px;
+    height: auto;
+}
+
+/* Style the "Profile" label */
+.text-center p {
+    font-weight: bold; /* Add bold font weight */
+    color: #333; /* Change the text color */
+    margin-top: 5px; /* Add space between the image and the label */
+}
+
+    </style>
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
+            <div class="container">
+                <img src="{% static 'Niwi_Travels/images/niwilogo.jpg' %}" alt="Logo" width="40px" height="35px">
+                <a class="navbar-brand" href="#">NIWI TRAVELS</a>
+                <button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="oi oi-menu"></span> Menu
+                </button>
+
+                <div class="collapse navbar-collapse" id="ftco-nav">
+                    <ul class="navbar-nav nav ml-auto">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item"><a href="/thome#destination-section" class="nav-link"><span>Destination</span></a></li>
+                        <li class="nav-item"><a href="/thome" class="nav-link"><span>Home</span></a></li>
+                        <li class="nav-item dropdown">
+                            <div class="navbar-logo">
+                                {% if profile.profile_photo %}
+                                <img src="{{ profile.profile_photo.url }}" alt="{{ user.username }}" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                                {% else %}
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown">Profile</a>
+                                {% endif %}
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div class="text-center">
+                                    {% if profile.profile_photo %}
+                                        <img src="{{ profile.profile_photo.url }}" alt="{{ user.username }}" class="profile-image">
+                                    {% endif %}
+                                    <p>{{ user.username }}</p>
+                                </div>
+                                <a class="dropdown-item" href="/viewprofileT">View Profile</a>
+                                <a class="dropdown-item" href="/tupdate" id="#">Update Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/logout" id="logout-link" >Logout</a>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li class="nav-item"><a href="/#destination-section" class="nav-link"><span>Destination</span></a></li>
+                        <li class="nav-item"><a href="/" class="nav-link"><span>Home</span></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <br>
+    <main>
+        <section id="home-section" class="hero">
+            <h1>Package Details</h1>
+            <h2>{{ package.package_name }}</h2>
+            <p><strong>Destination:</strong> {{ package.destination }}</p>
+            <p><strong>Price:</strong> ₹{{ package.price }}</p>
+            <p><strong>Start Date:</strong> {{ package.start_date }}</p>
+            <p><strong>End Date:</strong> {{ package.end_date }}</p>
+            <p><strong>Duration:</strong> {{ package.duration }} Days</p>
+            <p><strong>Accommodation:</strong> {{ package.accommodation }}</p>
+            <p><strong>Transportation:</strong> {{ package.transportation }}</p>
+            <p><strong>Activities:</strong> {{ package.activities }}</p>
+            <p><strong>Inclusions:</strong> {{ package.inclusions }}</p>
+            <p><strong>Exclusions:</strong> {{ package.exclusions }}</p>
+            <p><strong>Category:</strong> {{ package.category }}</p>
+            <p><strong>Availability:</strong> {{ package.availability }}</p>
+            <p><strong>Booking Deadline:</strong> {{ package.booking_deadline }}</p>
+            <p><strong>Cancellation Policy:</strong> {{ package.cancellation_policy }}</p>
+
+            <!-- Display the package images -->
+            <h2>Package Images</h2>
+            <div class="image-gallery">
+                {% for image in package.packageimage_set.all %}
+                    <img src="{{ image.image.url }}" alt="{{ image.package.package_name }} Image" width="250" height="250">
+                {% endfor %}
+            </div>
+
+            <!-- Add a "Book Now" button -->
+            <form method="POST" action="#">
+                {% csrf_token %}
+                {% if user.is_authenticated %}
+                <button type="submit">Book Now</button>
+                {% else %}
+                <a href="/">Back To Home</a>
+                {% endif %}
+            </form>
+        </section>
+    </main>
+</body>
+</html>

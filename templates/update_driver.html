@@ -13,15 +13,14 @@
     .profile-table {
         width: 100%;
         border-collapse: collapse;
-        text-align: center; /* Center-align table content */
+        text-align: left; /* Left-align table content */
     }
 
     .profile-table tr {
-        border-bottom: 1px solid #ddd;
         transition: background-color 0.3s;
     }
 
-    .profile-table tr:hover {
+    .profile-table tr:nth-child(odd) {
         background-color: #f5f5f5;
     }
 
@@ -37,7 +36,8 @@
     .profile-table input[type="text"],
     .profile-table input[type="email"],
     .profile-table input[type="file"],
-    .profile-table input[type="number"] {
+    .profile-table input[type="number"],
+    .profile-table input[type="date"] {
         width: 100%;
         padding: 10px;
         margin: 8px 0;
@@ -49,7 +49,8 @@
     .profile-table input[type="text"]:hover,
     .profile-table input[type="email"]:hover,
     .profile-table input[type="file"]:hover,
-    .profile-table input[type="number"]:hover {
+    .profile-table input[type="number"]:hover,
+    .profile-table input[type="date"]:hover {
         border-color: #007BFF;
     }
 
@@ -87,7 +88,6 @@
         font-size: 14px;
         margin-top: 5px;
     }
-
 </style>
 
 <div class="profile-table">
@@ -105,11 +105,19 @@
             </tr>
             <tr>
                 <td><label for="contact_email">Email:</label></td>
-                <td><input type="email" name="contact_email" id="contact_email" required value="{{ user_details.email }}"></td>
+                <td><input type="email" name="contact_email" id="contact_email" required value="{{ profile.contact_email }}"></td>
             </tr>
             <tr>
                 <td><label for="contact_phone_number">Phone Number:</label></td>
                 <td><input type="text" name="contact_phone_number" id="contact_phone_number" required value="{{ profile.contact_phone_number }}"></td>
+            </tr>
+            <tr>
+                <td><label for="date_of_birth">Date of Birth:</label></td>
+                <td><input type="date" name="date_of_birth" id="date_of_birth" value="{{ profile.date_of_birth }}"></td>
+            </tr>
+            <tr>
+                <td><label for="location">Location:</label></td>
+                <td><input type="text" name="location" id="location" value="{{ profile.location }}"></td>
             </tr>
             <tr>
                 <td><label for="profile_photo">Profile Photo:</label></td>
@@ -117,7 +125,7 @@
                     {% if profile.profile_photo %}
                         <img src="{{ profile.profile_photo.url }}" alt="Profile Photo" width="250px" height="200px">
                     {% endif %}
-                    <input type="file" name="profile_photo" id="profile_photo">
+                    <input type="file" name="profile_photo" id="profile_photo" accept=".jpg">
                 </td>
             </tr>
             <tr>
@@ -126,22 +134,22 @@
                     {% if profile.license %}
                         <a href="{{ profile.license.url }}" download>Download License</a>
                     {% endif %}
-                    <input type="file" name="license" id="license" required>
+                    <input type="file" name="license" id="license" accept=".pdf">
                 </td>
             </tr>
         </table>
-        <button type="submit" id="logout-link">Update Profile</button>
+        <button type="submit" id="update-button">Update Profile</button>
     </form>
 </div>
 
 <script>
     // Wait for the document to be fully loaded
     document.addEventListener("DOMContentLoaded", function () {
-        // Find the logout button by its ID
-        var logoutButton = document.getElementById("logout-link");
+        // Find the update button by its ID
+        var updateButton = document.getElementById("update-button");
 
-        // Add a click event listener to the logout button
-        logoutButton.addEventListener("click", function () {
+        // Add a click event listener to the update button
+        updateButton.addEventListener("click", function () {
             // Reload the page after a short delay (you can adjust the delay as needed)
             setTimeout(function () {
                 location.reload();

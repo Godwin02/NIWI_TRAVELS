@@ -64,7 +64,6 @@
             margin-bottom: 20px;
         }
 
-        .registration-container input[type="text"],
         .registration-container input[type="email"],
         .registration-container input[type="password"],
         .registration-container select {
@@ -78,7 +77,6 @@
             transition: border-color 0.3s, box-shadow 0.3s;
         }
 
-        .registration-container input[type="text"]:hover,
         .registration-container input[type="email"]:hover,
         .registration-container input[type="password"]:hover,
         .registration-container select:hover {
@@ -173,11 +171,6 @@
     <form action="#" method="post" id="forms">
         {% csrf_token %}
         <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username-input" placeholder="Create a Username" required>
-            <div id="username-validation-message" class="validation-message"></div>
-        </div>
-        <div class="form-group">
             <label for="email">Email</label>
        
             <input type="email" name="email" id="email-input" placeholder="Enter your Email-Id" required>
@@ -201,52 +194,19 @@
 </div>
 <script>
     // Get references to the validation message elements
-    const usernameValidationMessage = document.getElementById('username-validation-message');
-    const usertypeValidationMessage = document.getElementById('usertype-validation-message');
+
     const emailValidationMessage = document.getElementById('email-validation-message');
     const passwordValidationMessage = document.getElementById('password-validation-message');
     const confirmPasswordValidationMessage = document.getElementById('confirm-password-validation-message');
     //
-    const integrityErrorMessage = document.getElementById('integrity-error-message');
-
+    // const integrityErrorMessage = document.getElementById('integrity-error-message');
     // Get references to form fields
-    const usernameInput = document.getElementById('username-input');
-    const userTypeInput = document.getElementById('usertype-input');
     const emailInput = document.getElementById('email-input');
     const passwordInput = document.getElementById('password-input');
     const confirmPasswordInput = document.getElementById('confirm-password-input');
 
 // Validate username (no whitespace, only underscores allowed, at least 6 characters)
-usernameInput.addEventListener('input', () => {
-    const usernameValue = usernameInput.value.trim();
-    if (usernameValue === '') {
-        usernameValidationMessage.textContent = 'Please enter your name.';
-        usernameValidationMessage.classList.remove('green-text'); // Remove green color class
-    } else if (usernameValue.length < 6) {
-        usernameValidationMessage.textContent = 'Username must be at least 6 characters.';
-        usernameValidationMessage.classList.remove('green-text'); // Remove green color class
-    } else if (/\s/.test(usernameValue)) {
-        usernameValidationMessage.textContent = 'Username cannot contain spaces.';
-        usernameValidationMessage.classList.remove('green-text'); // Remove green color class
-    } else if (!/[a-zA-Z]/.test(usernameValue) || !/\d/.test(usernameValue)) {
-        usernameValidationMessage.textContent = 'Username should contain both letters and numbers.';
-        usernameValidationMessage.classList.remove('green-text'); // Remove green color class
-    } else if (/[!@#$%^&*()_+]/.test(usernameValue)) {
-        usernameValidationMessage.textContent = 'Special characters are not allowed in the username.';
-        usernameValidationMessage.classList.remove('green-text'); // Remove green color class
-    } else if (/\./.test(usernameValue)) {
-        usernameValidationMessage.textContent = 'Username cannot contain a dot.';
-        usernameValidationMessage.classList.remove('green-text'); // Remove green color class
-    } else {
-        usernameValidationMessage.textContent = 'Good to go Forward :)';
-        usernameValidationMessage.classList.add('green-text'); // Add green color class
-        // Set a timeout to erase the message after 5 seconds
-        setTimeout(() => {
-            usernameValidationMessage.textContent = ''; // Clear the message
-            usernameValidationMessage.classList.remove('green-text'); // Remove green color class
-        }, 5000);
-    }
-});
+
 
 // Validate email
 emailInput.addEventListener('input', () => {
@@ -335,7 +295,6 @@ function validateForm(event) {
 
     // Check if all validation messages are empty
     if (
-        usernameValidationMessage.textContent ||
         emailValidationMessage.textContent ||
         passwordValidationMessage.textContent ||
         confirmPasswordValidationMessage.textContent

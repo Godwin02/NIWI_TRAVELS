@@ -1,88 +1,148 @@
-{% extends 'loginview.html' %}
-{% block content %}
-<style>
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
+{% load static %}
 
-    .profile-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>NIWITRAVELS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    .profile-table tr {
-        border-bottom: 1px solid #ddd;
-        transition: background-color 0.3s;
-    }
 
-    .profile-table tr:hover {
-        background-color: #f5f5f5;
-    }
+        <link rel="icon" href="{% static 'Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    .profile-table td {
-        padding: 10px;
-        text-align: center; /* Center-align table cells */
-    }
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    
+       <link rel="stylesheet" href="{% static 'Niwi_Travels/css/open-iconic-bootstrap.min.css' %}"> 
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/animate.css' %}">
+        
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/owl.carousel.min.css' %}">
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/owl.theme.default.min.css' %}">
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/magnific-popup.css' %}">
+    
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/aos.css' %}">
+    
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/ionicons.min.css' %}">
+        
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/flaticon.css' %}">
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/icomoon.css' %}">
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/style.css' %}">
+        <style>
+            /* Add custom CSS styles here */
+            .container {
+            margin-top: 80px; /* Adjust the top margin to control the space below the navbar */
+        }
 
-    .profile-table label {
-        font-weight: bold;
-        color: #333;
-    }
+        .profile-table {
+            width: 100%;
+            max-width: 800px; /* Set a maximum width for the table */
+            margin: 0 auto; /* Center the table horizontally */
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    .profile-table img {
-        max-width: 100px;
-        max-height: 100px;
-        display: block;
-        margin: 0 auto; /* Center-align the image */
-    }
+        .profile-table th, .profile-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
 
-    /* Center-align the "View Profile" heading */
-    h2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-</style>
+        .profile-table th {
+            background-color: #050505;
+            color: #fff;
+        }
+
+        .profile-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .profile-table tr:hover {
+            background-color: #ddd;
+        }
+
+        .profile-table img {
+            max-width: 100px; /* Limit the width of profile photos */
+            height: auto;
+            display: block;
+            margin: 0 auto; /* Center the profile photos */
+        }
+
+        .text-dark {
+            color: #000000; /* Dark text color */
+        }
+        </style>
+        
+      </head>
+
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+    
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
+        <div class="container">
+            <img src="{% static 'Niwi_Travels/images/niwilogo.jpg' %}" alt="Logo" width="40px" height="35px"> <a class="navbar-brand" href="#">NIWI TRAVELS</a>
+          <button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+          </button>
+
+          <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav nav ml-auto">
+                
+              <li class="nav-item"><a href="/thome" class="nav-link"><span>Home</span></a></li>
+              <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                Profile
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="/viewprofileT">View Profile</a>
+                    <a class="dropdown-item" href="/tupdate" id="#">Update Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/logout" id="logout-link" >Logout</a>
+                </div>
+            </li>
+            </ul>
+            
+          </div>
+        </div>
+      </nav>
+
 
 <div class="container">
-    <h2>View Profile</h2>
+    <h2 class="text-center">View Profile</h2>
     <table class="profile-table">
         <tr>
-            <td><label for="username">Username:</label></td>
-            <td>{{ user_details.username }}</td>
+            <td class="text-dark"><label for="username">Username:</label></td>
+            <td class="text-dark">{{ user_details.username }}</td>
         </tr>
         <tr>
-            <td><label for="email">Email:</label></td>
-            <td>{{ user_details.email }}</td>
+            <td class="text-dark"><label for="email">Email:</label></td>
+            <td class="text-dark">{{ user_details.email }}</td>
         </tr>
         <tr>
-            <td><label for="first_name">First Name:</label></td>
-            <td>{{ profile.first_name }}</td>
+            <td class="text-dark"><label for="first_name">First Name:</label></td>
+            <td class="text-dark">{{ profile.first_name }}</td>
         </tr>
         <tr>
-            <td><label for="last_name">Last Name:</label></td>
-            <td>{{ profile.last_name }}</td>
+            <td class="text-dark"><label for="last_name">Last Name:</label></td>
+            <td class="text-dark">{{profile.last_name }}  {{ user_details.last_name }}</td>
         </tr>
         <tr>
             <td><label for="phone_number">Phone Number:</label></td>
             <td>{{ profile.phone_number }}</td>
         </tr>
         <tr>
-            <td><label for="gender">Gender:</label></td>
-            <td>{{ profile.gender }}</td>
+            <td class="text-dark"><label for="country">Country:</label></td>
+            <td class="text-dark">{{ profile.country }}</td>
         </tr>
         <tr>
-            <td><label for="country">Country:</label></td>
-            <td>{{ profile.country }}</td>
+            <td class="text-dark"><label for="gender">Gender:</label></td>
+            <td class="text-dark">{{ profile.gender }}</td>
         </tr>
         <tr>
-            <td><label for="profile_photo">Profile Photo:</label></td>
-            <td>
+            <td class="text-dark"><label for="profile_photo">Profile Photo:</label></td>
+            <td >
                 {% if profile.profile_photo %}
                     <img src="{{ profile.profile_photo.url }}" alt="Profile Photo">
                 {% else %}
@@ -92,4 +152,5 @@
         </tr>
     </table>
 </div>
-{% endblock %}
+</body>
+</html>

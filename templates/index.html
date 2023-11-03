@@ -28,8 +28,44 @@
     <link rel="stylesheet" href="{% static 'Niwi_Travels/css/flaticon.css' %}">
     <link rel="stylesheet" href="{% static 'Niwi_Travels/css/icomoon.css' %}">
     <link rel="stylesheet" href="{% static 'Niwi_Travels/css/style.css' %}">
+	<script>
+		function showAlert(message) {
+			var alertContainer = document.createElement('div');
+			alertContainer.className = 'custom-alert';
+			alertContainer.innerHTML = message;
+			document.body.appendChild(alertContainer);
+			setTimeout(function () {
+				alertContainer.style.display = 'none';
+			}, 5000); // Hide the alert after 5 seconds
+		}
+	</script>
+	
   </head>
+  <style>
+    /* Define custom alert styles */
+    .custom-alert {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-size: 16px;
+        z-index: 9999;
+    }
+</style>
+
   <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+<script>
+    {% if messages %}
+    document.addEventListener('DOMContentLoaded', function () {
+        showAlert("{% for message in messages %}{{ message }}{% endfor %}");
+    });
+    {% endif %}
+</script>
+
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
 	    <div class="container">
 			<img src="{% static 'Niwi_Travels/images/niwilogo.jpg' %}" alt="Logo" width="40px" height="35px"> <a class="navbar-brand" href="#">NIWI TRAVELS</a>
@@ -270,195 +306,52 @@
     	</div>
     </section>
 
-    <section class="ftco-intro img" id="destination-section" style="background-image: url({% static 'Niwi_Travels/images/bg_3.jpg' %});">
-			<div class="overlay"></div>
-			<div class="container">
-				<div class="row justify-content-center">
-					<div class="col-md-9 text-center">
-						<h2>Choose the Perfect Destination</h2>
-						<p>We can manage your dream building A small river named Duden flows by their place</p>
-						<p class="mb-0"><a href="#" class="btn btn-white px-4 py-3">Search Places</a></p>
-					</div>
-				</div>
-			</div>
-		</section>
-
-    <section class="ftco-section">
+	<section class="ftco-section" id="destination-section">
     	<div class="container">
     		<div class="row justify-content-center pb-5">
           <div class="col-md-12 heading-section text-center ftco-animate">
           	<span class="subheading">Best Destination</span>
             <h2 class="mb-4">Best Place to Travel</h2>
             <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
-          </div>
+
+
+			<!-- Add a unique modal for each package -->
+      <div class="row">
+        {% for package in running_packages %}
+        <div class="col-md-6 col-lg-4 ftco-animate">
+            <div class="project">
+                <div class="img">
+                    <a href="/package/{{ package.id }}">
+                        <img src="{{ package.packageimage_set.first.image.url }}" class="img-fluid" alt="{{ package.package_name }} Image">
+                    </a>
+                </div>
+                <div class="text">
+                    <h4 class="price">₹{{ package.price }}</h4>
+                    <span>{{ package.duration }} Days Tour</span>
+                    <h3>
+                        <a href="/package/{{ package.id }}">{{ package.package_name }}</a>
+                    </h3>
+                    <div class="star d-flex clearfix">
+                        <div class="mr-auto float-left">
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                        </div>
+                        <div class="float-right">
+                            <span class="rate"><a href="#">({{ package.availability }})</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    		<div class="row">
-    			<div class="col-md-6 col-lg-4 ftco-animate">
-    				<div class="project">
-    					<div class="img">
-    						<div class="vr"><span>Sale</span></div>
-		    				<a href="destination.html"><img src="{% static 'Niwi_Travels/images/destination-1.jpg' %}" class="img-fluid" alt="Colorlib Template"></a>
-	    				</div>
-	    				<div class="text">
-	    					<h4 class="price"><span class="old-price mr-2">$500</span>$400</h4>
-	    					<span>15 Days Tour</span>
-	    					<h3><a href="destination.html">Gurtnellen, Swetzerland</a></h3>
-	    					<div class="star d-flex clearfix">
-	    						<div class="mr-auto float-left">
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-	    						</div>
-	    						<div class="float-right">
-	    							<span class="rate"><a href="#">(120)</a></span>
-	    						</div>
-	    					</div>
-	    				</div>
-	    				<a href="{% static 'Niwi_Travels/images/destination-1.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-	    					<span class="icon-expand"></span>
-	    				</a>
-    				</div>
-    			</div>
-    			<div class="col-md-6 col-lg-4 ftco-animate">
-    				<div class="project">
-    					<div class="img">
-		    				<a href="destination.html"><img src="{% static 'Niwi_Travels/images/destination-2.jpg' %}" class="img-fluid" alt="Colorlib Template"></a>
-	    				</div>
-	    				<div class="text">
-	    					<h4 class="price">$400</h4>
-	    					<span>15 Days Tour</span>
-	    					<h3><a href="destination.html">Gurtnellen, Swetzerland</a></h3>
-	    					<div class="star d-flex clearfix">
-	    						<div class="mr-auto float-left">
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-	    						</div>
-	    						<div class="float-right">
-	    							<span class="rate"><a href="#">(120)</a></span>
-	    						</div>
-	    					</div>
-	    				</div>
-	    				<a href="{% static 'Niwi_Travels/images/destination-2.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-	    					<span class="icon-expand"></span>
-	    				</a>
-    				</div>
-    			</div>
-    			<div class="col-md-6 col-lg-4 ftco-animate">
-    				<div class="project">
-    					<div class="img">
-		    				<a href="destination.html"><img src="{% static 'Niwi_Travels/images/destination-3.jpg' %}" class="img-fluid" alt="Colorlib Template"></a>
-	    				</div>
-	    				<div class="text">
-	    					<h4 class="price">$400</h4>
-	    					<span>15 Days Tour</span>
-	    					<h3><a href="destination.html">Gurtnellen, Swetzerland</a></h3>
-	    					<div class="star d-flex clearfix">
-	    						<div class="mr-auto float-left">
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-	    						</div>
-	    						<div class="float-right">
-	    							<span class="rate"><a href="#">(120)</a></span>
-	    						</div>
-	    					</div>
-	    				</div>
-	    				<a href="{% static 'Niwi_Travels/images/destination-3.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-	    					<span class="icon-expand"></span>
-	    				</a>
-    				</div>
-    			</div>
-    			<div class="col-md-6 col-lg-4 ftco-animate">
-    				<div class="project">
-    					<div class="img">
-		    				<a href="destination.html"><img src="{% static 'Niwi_Travels/images/destination-4.jpg' %}" class="img-fluid" alt="Colorlib Template"></a>
-	    				</div>
-	    				<div class="text">
-	    					<h4 class="price">$400</h4>
-	    					<span>15 Days Tour</span>
-	    					<h3><a href="destination.html">Gurtnellen, Swetzerland</a></h3>
-	    					<div class="star d-flex clearfix">
-	    						<div class="mr-auto float-left">
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-	    						</div>
-	    						<div class="float-right">
-	    							<span class="rate"><a href="#">(120)</a></span>
-	    						</div>
-	    					</div>
-	    				</div>
-	    				<a href="{% static 'Niwi_Travels/images/destination-4.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-	    					<span class="icon-expand"></span>
-	    				</a>
-    				</div>
-    			</div>
-    			<div class="col-md-6 col-lg-4 ftco-animate">
-    				<div class="project">
-    					<div class="img">
-		    				<a href="destination.html"><img src="{% static 'Niwi_Travels/images/destination-5.jpg' %}" class="img-fluid" alt="Colorlib Template"></a>
-	    				</div>
-	    				<div class="text">
-	    					<h4 class="price">$400</h4>
-	    					<span>15 Days Tour</span>
-	    					<h3><a href="destination.html">Gurtnellen, Swetzerland</a></h3>
-	    					<div class="star d-flex clearfix">
-	    						<div class="mr-auto float-left">
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-	    						</div>
-	    						<div class="float-right">
-	    							<span class="rate"><a href="#">(120)</a></span>
-	    						</div>
-	    					</div>
-	    				</div>
-	    				<a href="{% static 'Niwi_Travels/images/destination-5.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-	    					<span class="icon-expand"></span>
-	    				</a>
-    				</div>
-    			</div>
-    			<div class="col-md-6 col-lg-4 ftco-animate">
-    				<div class="project">
-    					<div class="img">
-		    				<a href="destination.html"><img src="{% static 'Niwi_Travels/images/destination-6.jpg' %}" class="img-fluid" alt="Colorlib Template"></a>
-	    				</div>
-	    				<div class="text">
-	    					<h4 class="price">$400</h4>
-	    					<span>15 Days Tour</span>
-	    					<h3><a href="destination.html">Gurtnellen, Swetzerland</a></h3>
-	    					<div class="star d-flex clearfix">
-	    						<div class="mr-auto float-left">
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-		    						<span class="ion-ios-star"></span>
-	    						</div>
-	    						<div class="float-right">
-	    							<span class="rate"><a href="#">(120)</a></span>
-	    						</div>
-	    					</div>
-	    				</div>
-	    				<a href="{% static 'Niwi_Travels/images/destination-6.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-	    					<span class="icon-expand"></span>
-	    				</a>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
+        {% endfor %}
+    </div>
+
     </section>
+
+
 
 
 
