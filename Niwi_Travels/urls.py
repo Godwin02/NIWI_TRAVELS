@@ -53,6 +53,13 @@ urlpatterns = [
     path('view-packages/', views.view_travel_packages, name='view_packages'),
     path('edit_package/<int:package_id>/', views.edit_package, name='edit_package'),
     path('package/<int:package_id>/', views.package_detail, name='package_detail'),
+    path('add_passenger/<int:package_id>/', views.add_passenger, name='add_passenger'),
+    path('upcoming-journeys/', views.upcoming_journeys, name='upcoming_journeys'),
+    path('history-journeys/', views.history_journeys, name='history_journeys'),
+    path('ongoing-journeys/', views.ongoing_journeys, name='ongoing_journeys'),
+    path('cancel_booking/<int:package_id>/', views.cancel_booking, name='cancel_booking'),
+
+
 
 
 

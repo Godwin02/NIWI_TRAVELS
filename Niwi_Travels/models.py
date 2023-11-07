@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -82,3 +83,17 @@ class PackageImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.package.package_name}"
+    
+
+class Passenger(models.Model):
+    passenger_name = models.CharField(max_length=100)
+    passenger_age = models.PositiveIntegerField()
+    proof_of_id = models.FileField(upload_to='passenger_ids/')
+    package = models.ForeignKey(TravelPackage, on_delete=models.CASCADE)  # Assuming TravelPackage is your package model
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Associate each passenger with a user
+
+    def __str__(self):
+        return self.passenger_name
+    
+
+

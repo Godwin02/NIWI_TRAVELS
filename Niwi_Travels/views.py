@@ -144,6 +144,7 @@ def login(request):
             if user.is_traveller==True:
                 request.session["user_type"] = "traveller" 
                 print("hello") # Set session variable for user type
+                messages.success(request, "welcome To NIWI TRAVELS. Explore the Unexplored!")
                 return redirect('/thome')
             elif user.is_driver==True:
                 request.session["user_type"] = "driver"  # Set session variable for user type
@@ -241,15 +242,12 @@ def activate_email(request, uidb64, token):
 @never_cache
 @login_required(login_url='log')
 def traveller_home(request):
+    running_packages = TravelPackage.objects.filter(status='Running')
     if request.user.is_authenticated and hasattr(request.user, 'traveller'):
         profile = request.user.traveller  # Get or create the Traveller model instance
-        # Fetch TravelPackage objects with status 'Running'
-        running_packages = TravelPackage.objects.filter(status='Running')
         return render(request, 'loginview.html', {'profile': profile, 'running_packages': running_packages})
     if request.user.is_traveller:
         profile = request.user.is_traveller  # Corrected from 'is_traveller' to 'traveller'
-        # Fetch TravelPackage objects with status 'Running'
-        running_packages = TravelPackage.objects.filter(status='Running')
         return render(request, 'loginview.html', {'profile': profile, 'running_packages': running_packages})
     # If the user is not a traveler or not logged in, redirect to login
     return render(request, 'login.html')
@@ -306,7 +304,6 @@ def profile_updated(request):
 @login_required(login_url='log')
 def viewprofile(request):
     if request.user.is_authenticated and hasattr(request.user, 'traveller'):
-        user = request.user
         profile = request.user.traveller # Get or create the Traveller model instance
 
         # Get user details from the Traveller model
@@ -409,7 +406,7 @@ def viewprofileD(request):
 def logo(request):
     logout(request)
     cache.clear()
-    return render(request, 'index.html')
+    return redirect('/')
 
 
 @never_cache
@@ -418,7 +415,7 @@ def admin(request):
     if request.user.is_staff:
         return render(request, 'adminreg.html')
     cache.clear()
-    return redirect('login')
+    return redirect('/log')
 
 
 @never_cache
@@ -639,13 +636,29 @@ def upload_package(request):
     # This block handles the GET request, rendering the template for uploading a package
     return render(request, "add_package.html")
 
+
+
+from datetime import date, timezone
+
 @never_cache
 @login_required(login_url='log')
 def view_travel_packages(request):
     # Query the database to get a list of TravelPackage instances
     packages = TravelPackage.objects.all()
+    search_date = request.GET.get('search_date')
+    if search_date:
+        try:
+            search_date = date.fromisoformat(search_date)
+            packages = packages.filter(start_date=search_date)
+        except ValueError:
+            # Handle the case when an invalid date is entered
+            pass
+    # Add pagination
+    paginator = Paginator(packages, 10)  # Show 10 items per page
+    page = request.GET.get('page')
+    packages = paginator.get_page(page)
 
-    # Render the template with the queried data
+    # Render the template with the queried data and pagination context
     return render(request, 'view_package.html', {'packages': packages})
 
 
@@ -694,4 +707,154 @@ def edit_package(request, package_id):
 
 def package_detail(request, package_id):
     package = get_object_or_404(TravelPackage, pk=package_id)
-    return render(request, 'package_detail.html', {'package': package})
+    from_upcoming_journeys = request.GET.get('from_upcoming_journeys')
+    user= request.user
+    passenger = Passenger.objects.filter(package=package, user=user).first()
+
+    if from_upcoming_journeys:
+        # If the 'from_upcoming_journeys' query parameter is present, hide the book button
+        return render(request, 'package_detail.html', {'package': package, 'from_upcoming_journeys': from_upcoming_journeys})
+
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'traveller'):
+            profile = request.user.traveller  # Get or create the Traveller model instance
+            return render(request, 'package_detail.html', {'profile': profile,'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
+        if request.user.is_traveller:
+            profile = request.user.is_traveller  # Corrected from 'is_traveller' to 'traveller'
+            return render(request, 'package_detail.html', {'profile': profile,'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
+    else:
+        return render(request, 'package_detail.html', {'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
+
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from .models import Passenger
+
+def add_passenger(request, package_id):
+    package = get_object_or_404(TravelPackage, id=package_id)
+    if request.method == 'POST':
+        user_id = request.user.id
+        package_id = package_id
+        passenger_name_list = request.POST.getlist('passenger_name')
+        passenger_age_list = request.POST.getlist('passenger_age')
+        proof_of_id_list = request.FILES.getlist('proof_of_id')
+        print(passenger_name_list)
+
+        # Check if the number of entries in all lists match
+        if len(passenger_name_list) == len(passenger_age_list) == len(proof_of_id_list):
+            flag = 0
+            for i in range(len(passenger_name_list)):
+                passenger_name = passenger_name_list[i]
+                passenger_age = passenger_age_list[i]
+                proof_of_id = proof_of_id_list[i]
+
+                passenger = Passenger(
+                    user_id=user_id,
+                    package_id=package_id,
+                    passenger_name=passenger_name,
+                    passenger_age=passenger_age,
+                    proof_of_id=proof_of_id
+                )
+                passenger.save()
+                flag = 1
+
+            if flag == 0:
+                return render(request, 'passenger_info.html', {'package':package,'package_id': package_id})
+            else:
+                return redirect('/thome')
+        else:
+            # Handle the case where the number of entries in lists don't match
+            messages.success(request, "Upload ID Proof of all the Passengers for Booking.")
+    return render(request, 'passenger_info.html', {'package':package,'package_id': package_id})
+      
+
+from django.shortcuts import render
+from .models import TravelPackage
+from django.utils import timezone
+
+def upcoming_journeys(request):
+    current_date = timezone.now().date()
+    user = request.user
+
+    # Retrieve upcoming journeys for the user
+    upcoming_journeys = TravelPackage.objects.filter(start_date__gt=current_date, passenger__user=user).distinct()
+
+    # Create a dictionary to store the travel packages along with their images
+    packages_with_images = []
+
+    for journey in upcoming_journeys:
+        # Retrieve images related to the travel package
+        package_images = PackageImage.objects.filter(package=journey)
+
+        # Append the travel package and its images to the dictionary
+        packages_with_images.append({
+            'package': journey,
+            'images': package_images
+        })
+
+    return render(request, 'upcoming_journeys.html', {'packages_with_images': packages_with_images})
+
+
+def history_journeys(request):
+    current_date = timezone.now().date()
+    user = request.user  # Assuming you are using authentication
+
+    # Retrieve historical journeys for the user
+    history_journeys = TravelPackage.objects.filter(end_date__lt=current_date, passenger__user=user).distinct()
+    packages_with_images = []
+
+    for journey in history_journeys:
+        # Retrieve images related to the travel package
+        package_images = PackageImage.objects.filter(package=journey)
+
+        # Append the travel package and its images to the dictionary
+        packages_with_images.append({
+            'package': journey,
+            'images': package_images
+        })
+
+    return render(request, 'history_journeys.html', {'packages_with_images': packages_with_images})
+
+
+def ongoing_journeys(request):
+    current_date = timezone.now().date()
+    user = request.user  # Assuming you are using authentication
+
+    # Retrieve historical journeys for the user
+    ongoing_journeys = TravelPackage.objects.filter(start_date__lt=current_date ,end_date__gt=current_date, passenger__user=user).distinct()
+
+    packages_with_images = []
+
+    for journey in ongoing_journeys:
+        # Retrieve images related to the travel package
+        package_images = PackageImage.objects.filter(package=journey)
+
+        # Append the travel package and its images to the dictionary
+        packages_with_images.append({
+            'package': journey,
+            'images': package_images
+        })
+
+    return render(request, 'ongoing_journeys.html', {'packages_with_images': packages_with_images})
+
+
+
+from django.urls import reverse
+
+def cancel_booking(request, package_id):
+    # Retrieve all passengers associated with the package and the logged-in user
+    passengers = Passenger.objects.filter(package=package_id, user=request.user)
+
+    # Check if there are passengers to cancel
+    if passengers:
+        # Delete all passenger records
+        passengers.delete()
+        messages.success(request, "Your bookings have been canceled successfully")
+        return redirect(reverse('thome'))  # Redirect to 'thome' using the named URL pattern
+    else:
+        # Handle the case where no bookings were found
+        messages.error(request, "No bookings found for cancellation")
+        return redirect(reverse('error_url_name'))  # Redirect to an error page using the named URL pattern
+
+
+
