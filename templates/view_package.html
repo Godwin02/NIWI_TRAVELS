@@ -49,13 +49,13 @@
 
     /* Styles for the form */
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Times New Roman', Times, serif;
         background-color: #f7f7f7;
         margin: 0;
         padding: 0;
     }
 
-    h1 {
+    h2 {
         text-align: center;
         color: #333;
     }
@@ -85,6 +85,55 @@
     tr:hover {
         background-color: #ddd;
     }
+    /* Style for the search form container */
+.search-form {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Style for the search input field */
+.search-input {
+    width: 200px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* Style for the search button */
+.search-button {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Style for the search button on hover */
+.search-button:hover {
+    background-color: #0056b3;
+}
+.navbar {
+    background-color: #007BFF; /* Set your desired background color */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for separation */
+}
+
+/* Style for the h1 in the navbar */
+.navbar h1 {
+    margin: 0;
+    font-size: 24px; /* Adjust the font size */
+}
+
+/* Style for the p in the navbar */
+.navbar p {
+    margin: 0;
+    font-size: 16px; /* Adjust the font size */
+}
 </style>
 <body>
     <div class="sidebar">
@@ -93,9 +142,17 @@
         <a href="/upload_package">Add Packages</a>
 
     </div>
+    <div class="navbar">
+        <h1>Welcome Admin</h1>
+        <p>This is where you can manage users, packages, and ongoing trips.</p>
+    </div>
     <div class="main-content">
-    <h1>View Travel Packages</h1>
+    <h2>View Travel Packages</h2>
     <table class="table">
+        <form method="get" class="search-form">
+            <input type="date" name="search_date" placeholder="Search by start date" class="search-input">
+            <button type="submit" class="search-button">Search By Date</button>
+        </form>
         <thead>
             <tr>
                 <th>Package ID</th>
@@ -127,4 +184,25 @@
                 </tr>
             {% endfor %}
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7">
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if packages.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
+                                <a href="?page={{ packages.previous_page_number }}">previous</a>
+                            {% endif %}
+
+                            <span class="current-page">Page {{ packages.number }} of {{ packages.paginator.num_pages }}.</span>
+
+                            {% if packages.has_next %}
+                                <a href="?page={{ packages.next_page_number }}">next</a>
+                                <a href="?page={{ packages.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
     </table>

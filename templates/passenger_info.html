@@ -1,0 +1,354 @@
+{% load static %}
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Add Passenger Information</title>
+        <link rel="icon" href="{% static 'Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/style.css' %}">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="icon" href="{% static 'Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
+
+        <style>
+            
+        </style>
+        <script>
+            // Wait for the document to be fully loaded
+            document.addEventListener("DOMContentLoaded", function () {
+                // Find the message container
+                var messageContainer = document.getElementById("message-container");
+                
+                // Check if the message container exists
+                if (messageContainer) {
+                    // Set a timeout to remove the message container after 5 seconds
+                    setTimeout(function () {
+                        messageContainer.style.display = "none"; // Hide the container
+                    }, 5000); // 5000 milliseconds = 5 seconds
+                }
+            });
+        </script>
+        
+    </head>
+    <body>
+        <style>
+            .form-container {
+                width: 80%;
+                margin: 0 auto;
+            }
+        
+            .passenger-form {
+                padding: 20px;
+                background-color: #f4f4f4;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+        
+            .passenger-form div {
+                margin-bottom: 10px;
+            }
+        
+            input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+        
+            label {
+                font-weight: bold;
+            }
+        
+            .error-message {
+                color: red;
+            }
+        
+            .add-passenger-button,
+            .submit-button {
+                padding: 10px 20px;
+                background-color: #007BFF;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+        
+            .add-passenger-button {
+                background-color: #28a745; /* Green */
+            }
+        
+            .add-passenger-button:hover,
+            .submit-button:hover {
+                background-color: #0056b3; /* Darker Blue */
+            }
+        
+            .passengers-container > div {
+                border: 1px solid #ddd;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                background-color: #fff;
+            }
+        </style>
+        
+
+        <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+    
+            <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
+                <div class="container">
+                    <img src="{% static 'Niwi_Travels/images/niwilogo.jpg' %}" alt="Logo" width="40px" height="35px"> <a class="navbar-brand" href="#">NIWI TRAVELS</a>
+
+        
+                  <div class="collapse navbar-collapse" id="ftco-nav">
+                    <ul class="navbar-nav nav ml-auto">
+                        
+                      <li class="nav-item"><a href="/thome" class="nav-link"><span style="color: #fff;">Home</span></a></li>
+                      <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" style="color: #fff;">
+                            {{ user.username }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/upcoming-journeys" id="#" style=" background-color: rgb(42, 165, 67);text-align: center; margin-top: 10px;">Upcoming Journeys</a>
+                            <a class="dropdown-item" href="/ongoing-journeys" id="#" style=" background-color: rgb(218, 180, 13);text-align: center;margin-top: 10px">Ongoing Trips</a>
+                            <a class="dropdown-item" href="/history-journeys" id="#" style=" background-color: rgb(234, 0, 0);text-align: center;margin-top: 10px">History</a>
+                            <a class="dropdown-item" href="/viewprofileT" style=" background-color: rgb(151, 140, 245);text-align: center;margin-top: 10px">View Profile</a>
+                            <a class="dropdown-item" href="/tupdate" id="#" style=" background-color: rgb(195, 67, 172);text-align: center;margin-top: 10px">Update Profile</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout" id="logout-link" style="color: rgb(255, 0, 0); background-color: rgb(40, 38, 38); text-align: center;margin-top: 10px">Logout</a>
+                        </div>
+                    </li>
+                    </ul>
+                    
+                  </div>
+                </div>
+              </nav>
+<br><br>        
+{% if messages %}
+<h3 style="color: red; text-align: center; font-size: medium;" class="messages" id="message-container">  {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+</h3>
+{% endif %}
+        <h1 style="text-align: center; color: rgb(86, 82, 81);">Add Passenger Information for {{ package.package_name }}</h1>
+        <div class="form-container">
+        <form method="POST" enctype="multipart/form-data" class="passenger-form" id="submit" onsubmit="return validateForm();">
+            {% csrf_token %}
+            
+            <!-- Existing passenger information input fields -->
+            <div>
+                <input type="text" name="passenger_name" id="passenger_name" placeholder="Passenger Name">
+                <span class="error-message" id="passenger-name-error"></span>
+            </div>
+            <div>
+                <input type="text" name="passenger_age" id="passenger_age" placeholder="Passenger Age">
+                <span class="error-message" id="passenger-age-error"></span>
+            </div>
+            <div>
+                <label for="proof_of_id">Upload an ID Proof:</label>
+                <input type="file" name="proof_of_id" id="proof_of_id">
+                <span class="error-message" id="proof-of-id-error"></span>
+            </div>
+        
+            <!-- Container to display added passengers -->
+            <div id="passengers-container" class="passengers-container"></div>
+        
+            <!-- Add a button to add another passenger -->
+            <button type="button" onclick="addPassenger()" class="add-passenger-button">Add Passenger</button>
+        
+            <!-- Add a submit button to save all passengers -->
+            <button type="submit" class="submit-button" onclick="return validateForm()">Save All Passengers</button>
+        </form>
+    </div>
+        
+        <script>
+            // Real-time validation for Passenger Name
+            const passengerNameInput = document.getElementById("passenger_name");
+            const passengerNameError = document.getElementById("passenger-name-error");
+        
+            passengerNameInput.addEventListener("input", function() {
+                const name = passengerNameInput.value.trim();
+                if (name === '') {
+                    passengerNameError.textContent = 'Passenger Name is required.';
+                } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                    passengerNameError.textContent = 'Passenger Name can only contain alphabets and spaces.';
+                } else {
+                    passengerNameError.textContent = '';
+                }
+            });
+        
+            // Real-time validation for Passenger Age
+            const passengerAgeInput = document.getElementById("passenger_age");
+            const passengerAgeError = document.getElementById("passenger-age-error");
+        
+            passengerAgeInput.addEventListener("input", function() {
+                const age = passengerAgeInput.value.trim();
+                if (age === '') {
+                    passengerAgeError.textContent = 'Passenger Age is required.';
+                } else if (isNaN(age) || parseInt(age) < 0) {
+                    passengerAgeError.textContent = 'Passenger Age must be a non-negative number.';
+                } else {
+                    passengerAgeError.textContent = '';
+                }
+            });
+        
+            // Real-time validation for Proof of ID
+            const proofOfIdInput = document.getElementById("proof_of_id");
+            const proofOfIdError = document.getElementById("proof-of-id-error");
+
+            proofOfIdInput.addEventListener("change", function() {
+                validateProofOfId(proofOfIdInput, proofOfIdError);
+            });
+
+            // Function to validate proof of ID
+            function validateProofOfId(input, errorElement) {
+            const file = input.files[0];
+            if (file) {
+                const allowedExtensions = /(\.pdf|\.jpg|\.jpeg|\.png)$/i;
+                if (!allowedExtensions.exec(file.name)) {
+                    errorElement.textContent = 'Proof of ID must be a PDF, JPG, JPEG, or PNG file.';
+                } else {
+                    errorElement.textContent = '';
+                }
+            } else {
+                errorElement.textContent = "Proof of ID is required.";
+            }
+        }
+
+            // Function to add a new passenger  
+        </script>
+        
+        
+        <script>
+            // JavaScript function to add a new passenger input field
+            function addPassenger() {
+                // Get the container element to display added passengers
+                var container = document.getElementById("passengers-container");
+        
+                // Create a new div element to hold the new input fields
+                var newPassengerDiv = document.createElement("div");
+        
+                // Create new input elements for the passenger details
+                var newPassengerNameInput = document.createElement("input");
+                newPassengerNameInput.type = "text";
+                newPassengerNameInput.name = "passenger_name";
+                newPassengerNameInput.placeholder = "Passenger Name";
+        
+                var newPassengerAgeInput = document.createElement("input");
+                newPassengerAgeInput.type = "text";
+                newPassengerAgeInput.name = "passenger_age";
+                newPassengerAgeInput.placeholder = "Passenger Age";
+        
+                var newPassengerIdProofLabel = document.createElement("label");
+                newPassengerIdProofLabel.for = "proof_of_id";
+                newPassengerIdProofLabel.innerText = "Upload an ID Proof";
+        
+                var newPassengerIdProofInput = document.createElement("input");
+                newPassengerIdProofInput.type = "file";
+                newPassengerIdProofInput.name = "proof_of_id";
+        
+                // Create elements for error messages
+            
+        
+                // Append the new input fields and label to the new div element
+                newPassengerDiv.appendChild(newPassengerNameInput);
+                newPassengerDiv.appendChild(passengerNameError);
+                newPassengerDiv.appendChild(newPassengerAgeInput);
+                newPassengerDiv.appendChild(passengerAgeError);
+                newPassengerDiv.appendChild(newPassengerIdProofLabel);
+                newPassengerDiv.appendChild(newPassengerIdProofInput);
+                newPassengerDiv.appendChild(proofOfIdError);
+        
+                // Append the new div element to the container
+                container.appendChild(newPassengerDiv);
+        
+                // Add input event listeners for real-time validation
+                newPassengerNameInput.addEventListener("input", function() {
+                    validatePassengerName(newPassengerNameInput, passengerNameError);
+                });
+        
+                newPassengerAgeInput.addEventListener("input", function() {
+                    validatePassengerAge(newPassengerAgeInput, passengerAgeError);
+                });
+        
+                newPassengerIdProofInput.addEventListener("change", function() {
+                    validateProofOfId(newPassengerIdProofInput, proofOfIdError);
+                });
+            }
+        
+            // Function to validate passenger name
+            function validatePassengerName(input, errorElement) {
+                var name = input.value.trim();
+                if (name === "") {
+                    errorElement.textContent = "Passenger Name is required.";
+                } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                    errorElement.textContent = "Passenger Name can only contain alphabets and spaces.";
+                } else {
+                    errorElement.textContent = '';
+                }
+            }
+        
+            // Function to validate passenger age
+            function validatePassengerAge(input, errorElement) {
+                var age = input.value.trim();
+                if (age === "") {
+                    errorElement.textContent = "Passenger Age is required.";
+                } else if (isNaN(age) || parseInt(age) < 0) {
+                    errorElement.textContent = "Passenger Age must be a non-negative number.";
+                } else {
+                    errorElement.textContent = '';
+                }
+            }
+        
+            // Function to validate proof of ID
+            function validateProofOfId(input, errorElement) {
+                var file = input.files[0];
+                if (!file) {
+                    errorElement.textContent = "Proof of ID is required.";
+                } else {
+                    var allowedExtensions = /(\.pdf|\.jpg|\.jpeg|\.png)$/i;
+                    if (!allowedExtensions.exec(file.name)) {
+                        errorElement.textContent = "Proof of ID must be a PDF, JPG, JPEG, or PNG file.";
+                    } else {
+                        errorElement.textContent = '';
+                    }
+                }
+            }
+
+        </script>
+        
+        <script>
+            // Function to validate the form before submission
+            function validateForm() {
+                // Check for errors in existing passenger information
+                const existingPassengerErrors = [
+                    document.getElementById("passenger-name-error"),
+                    document.getElementById("passenger-age-error"),
+                    document.getElementById("proof-of-id-error")
+                ];
+        
+                for (const errorElement of existingPassengerErrors) {
+                    if (errorElement.textContent) {
+                        alert("Please fix the errors in the form.");
+                        return false; // Prevent form submission
+                    }
+                }
+        
+                const addedPassengerContainers = document.querySelectorAll(".passengers-container > div");
+        
+                for (const passenger of addedPassengerContainers) {
+                    const passengerNameError = passenger.querySelector(".passenger-name-error");
+                    const passengerAgeError = passenger.querySelector(".passenger-age-error");
+                    const proofOfIdError = passenger.querySelector(".proof-of-id-error");
+        
+                    if (passengerNameError.textContent || passengerAgeError.textContent || proofOfIdError.textContent) {
+                        alert("Please fix the errors in the form.");
+                        return false; // Prevent form submission
+                    }
+                }
+                // If no errors are found, the form will be submitted
+                return true;
+            }
+        </script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+    </html>

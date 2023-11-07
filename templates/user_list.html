@@ -90,6 +90,25 @@ tr:hover {
             text-align: center;
             justify-content: center;
         }
+        .navbar {
+    background-color: #007BFF; /* Set your desired background color */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for separation */
+}
+
+/* Style for the h1 in the navbar */
+.navbar h1 {
+    margin: 0;
+    font-size: 24px; /* Adjust the font size */
+}
+
+/* Style for the p in the navbar */
+.navbar p {
+    margin: 0;
+    font-size: 16px; /* Adjust the font size */
+}
     </style>
 </head>
 <body>
@@ -99,7 +118,10 @@ tr:hover {
         <a href="{% url 'user_list' %}">Total Users ({{ user_count }})</a>   
         <!-- <a href="/logout" id="logout-link">Logout</a> -->
     </div>
-        
+    <div class="navbar">
+        <h1>Welcome Admin</h1>
+        <p>This is where you can manage users, packages, and ongoing trips.</p>
+    </div>
         <div class="main-content">
             <h1>Showing the List of Users of NIWITRAVELS</h1>
         </div>

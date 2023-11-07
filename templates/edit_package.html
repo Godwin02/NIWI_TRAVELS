@@ -49,13 +49,13 @@
     }
 
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Times New Roman', Times, serif;
         background-color: #f7f7f7;
         margin: 0;
         padding: 0;
     }
 
-    h1 {
+    h2 {
         text-align: center;
         color: #333;
     }
@@ -126,6 +126,25 @@
     .submit-button:hover {
         background-color: #0056b3;
     }
+    .navbar {
+    background-color: #007BFF; /* Set your desired background color */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for separation */
+}
+
+/* Style for the h1 in the navbar */
+.navbar h1 {
+    margin: 0;
+    font-size: 24px; /* Adjust the font size */
+}
+
+/* Style for the p in the navbar */
+.navbar p {
+    margin: 0;
+    font-size: 16px; /* Adjust the font size */
+}
 </style>
 <body>
     <div class="sidebar">
@@ -134,8 +153,12 @@
         <a href="/view-packages">View Packages</a>
         <a href="/upload_package">Add Package</a>
     </div>
+    <div class="navbar">
+        <h1>Welcome Admin</h1>
+        <p>This is where you can manage users, packages, and ongoing trips.</p>
+    </div>
     <div class="main-content">
-        <h1>Edit Travel Package</h1>
+        <h2>Edit Travel Package</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <table class="package-form">

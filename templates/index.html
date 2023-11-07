@@ -55,6 +55,17 @@
         font-size: 16px;
         z-index: 9999;
     }
+	.project .img {
+    height: 200px; /* Adjust the height to your preference */
+    overflow: hidden;
+}
+
+.project .img img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+}
+
 </style>
 
   <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
@@ -331,6 +342,7 @@
                     <h3>
                         <a href="/package/{{ package.id }}">{{ package.package_name }}</a>
                     </h3>
+					<h3 style="background-color: rgb(199, 21, 71);">{{ package.end_date }} is the Last Date for Booking</h3>
                     <div class="star d-flex clearfix">
                         <div class="mr-auto float-left">
                             <span class="ion-ios-star"></span>

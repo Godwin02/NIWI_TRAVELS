@@ -4,33 +4,15 @@
 <html lang="en">
 <head>
         <title>NIWITRAVELS</title>
+        <link rel="icon" href="{% static 'Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
+        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/style.css' %}">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 
         <link rel="icon" href="{% static 'Niwi_Travels/images/favicon.ico' %}" type="image/x-icon">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-        <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-    
-       <link rel="stylesheet" href="{% static 'Niwi_Travels/css/open-iconic-bootstrap.min.css' %}"> 
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/animate.css' %}">
-        
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/owl.carousel.min.css' %}">
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/owl.theme.default.min.css' %}">
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/magnific-popup.css' %}">
-    
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/aos.css' %}">
-    
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/ionicons.min.css' %}">
-        
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/flaticon.css' %}">
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/icomoon.css' %}">
-        <link rel="stylesheet" href="{% static 'Niwi_Travels/css/style.css' %}">
         <style>
             /* Add custom CSS styles here */
             .container {
@@ -77,37 +59,36 @@
         </style>
         
       </head>
-
-<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+      <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
     
-    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
-        <div class="container">
-            <img src="{% static 'Niwi_Travels/images/niwilogo.jpg' %}" alt="Logo" width="40px" height="35px"> <a class="navbar-brand" href="#">NIWI TRAVELS</a>
-          <button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="oi oi-menu"></span> Menu
-          </button>
+        <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
+            <div class="container">
+                <img src="{% static 'Niwi_Travels/images/niwilogo.jpg' %}" alt="Logo" width="40px" height="35px"> <a class="navbar-brand" href="#">NIWI TRAVELS</a>
 
-          <div class="collapse navbar-collapse" id="ftco-nav">
-            <ul class="navbar-nav nav ml-auto">
+    
+              <div class="collapse navbar-collapse" id="ftco-nav">
+                <ul class="navbar-nav nav ml-auto">
+                    
+                  <li class="nav-item"><a href="/thome" class="nav-link"><span style="color: #fff;">Home</span></a></li>
+                  <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" style="color: #fff;">
+                        {{ user.username }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="/upcoming-journeys" id="#" style=" background-color: rgb(42, 165, 67);text-align: center;margin-top: 10px">Upcoming Journeys</a>
+                        <a class="dropdown-item" href="/ongoing-journeys" id="#" style=" background-color: rgb(218, 180, 13);text-align: center;margin-top: 10px">Ongoing Trips</a>
+                        <a class="dropdown-item" href="/history-journeys" id="#" style=" background-color: rgb(234, 0, 0);text-align: center;margin-top: 10px">History</a>
+                        <a class="dropdown-item" href="/viewprofileT" style=" background-color: rgb(151, 140, 245);text-align: center;margin-top: 10px">View Profile</a>
+                        <a class="dropdown-item" href="/tupdate" id="#" style=" background-color: rgb(195, 67, 172);text-align: center;margin-top: 10px">Update Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout" id="logout-link" style="color: rgb(255, 0, 0); background-color: rgb(40, 38, 38); text-align: center;margin-top: 10px">Logout</a>
+                    </div>
+                </li>
+                </ul>
                 
-              <li class="nav-item"><a href="/thome" class="nav-link"><span>Home</span></a></li>
-              <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                Profile
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="/viewprofileT">View Profile</a>
-                    <a class="dropdown-item" href="/tupdate" id="#">Update Profile</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/logout" id="logout-link" >Logout</a>
-                </div>
-            </li>
-            </ul>
-            
-          </div>
-        </div>
-      </nav>
-
+              </div>
+            </div>
+          </nav>
 
 <div class="container">
     <h2 class="text-center">View Profile</h2>
@@ -152,5 +133,8 @@
         </tr>
     </table>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
