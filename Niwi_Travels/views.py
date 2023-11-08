@@ -1,9 +1,10 @@
+from itertools import count
 from django.forms import ValidationError
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import User, Traveller, Driver
+from .models import Booking, User, Traveller, Driver
 from django.core.paginator import Paginator
 from django.core.cache import cache
 from django.http import HttpResponseRedirect, HttpResponse
@@ -761,6 +762,14 @@ def add_passenger(request, package_id):
             if flag == 0:
                 return render(request, 'passenger_info.html', {'package':package,'package_id': package_id})
             else:
+                booking = Booking(
+                package_id=package_id,
+                user_id=user_id,
+                status='Pending'  # Set the status to 'Confirmed' or 'Pending' as needed
+                )
+                booking.save()
+                messages.success(request, "Your Booking Procedures have been Initialized. Stay Connected for getting further Updates.")
+
                 return redirect('/thome')
         else:
             # Handle the case where the number of entries in lists don't match
@@ -858,3 +867,201 @@ def cancel_booking(request, package_id):
 
 
 
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q, Subquery, OuterRef
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+from django.db.models import OuterRef, Subquery
+from django.db.models import Count  # Add this import at the top of your views.py
+@staff_member_required
+def upcoming_bookings(request):
+    current_date = timezone.now().date()
+
+    # Subquery to get the booking status for each passenger
+    booking_status_subquery = Booking.objects.filter(
+        package=OuterRef('package'),
+        user=OuterRef('user')
+    ).values('status')[:1]
+
+    # Retrieve all passengers
+    passengers = Passenger.objects.filter(
+        package__start_date__gt=current_date,
+        user__is_traveller=True
+    ).select_related('package', 'user')
+
+    # Filter unique users based on package ID and start date
+    unique_users = {}
+    for passenger in passengers:
+        key = (passenger.package.id, passenger.package.start_date)
+        if key not in unique_users:
+            unique_users[key] = passenger
+
+    # Get the unique user instances
+    unique_bookings = list(unique_users.values())
+
+    # Annotate passengers with their booking status
+    for booking in unique_bookings:
+        booking_record = Booking.objects.filter(
+            package=booking.package,
+            user=booking.user
+        ).first()
+        if booking_record:
+            booking.status = booking_record.status
+        else:
+            booking.status = "No Booking"
+
+    # Set the number of items per page
+    items_per_page = 10
+    paginator = Paginator(unique_bookings, items_per_page)
+
+    page = request.GET.get('page')
+    try:
+        bookings = paginator.page(page)
+    except PageNotAnInteger:
+        # If the page is not an integer, show the first page
+        bookings = paginator.page(1)
+    except EmptyPage:
+        # If the page is out of range, show the last page
+        bookings = paginator.page(paginator.num_pages)
+
+    return render(request, 'upcoming_bookings.html', {'bookings': bookings})
+
+
+
+
+
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+def passenger_count(request, package_id):
+    # Retrieve the specific travel package
+    package = get_object_or_404(TravelPackage, pk=package_id)
+
+    # Retrieve all passengers for the selected package
+    passengers = Passenger.objects.filter(package=package)
+
+    # Set the number of items per page
+    items_per_page = 10
+    paginator = Paginator(passengers, items_per_page)
+
+    page = request.GET.get('page')
+    try:
+        passengers = paginator.page(page)
+    except PageNotAnInteger:
+        # If the page is not an integer, show the first page
+        passengers = paginator.page(1)
+    except EmptyPage:
+        # If the page is out of range, show the last page
+        passengers = paginator.page(paginator.num_pages)
+
+    return render(request, 'passenger_count.html', {'package': package, 'passengers': passengers})
+
+
+
+@staff_member_required
+def ongoing_bookings(request):
+    current_date = timezone.now().date()
+
+    # Retrieve bookings for travelers with ongoing journeys
+    # Group passengers by user, and select the first passenger (ordered by id) for each user
+    subquery = Passenger.objects.filter(
+        Q(package__start_date__lte=current_date) &
+        Q(package__end_date__gte=current_date) &
+        Q(user__is_traveller=True) &
+        Q(user=OuterRef('user'))
+    ).order_by('user', 'id')[:1]
+
+    unique_journeys = Passenger.objects.filter(
+        Q(package__start_date__lte=current_date) &
+        Q(package__end_date__gte=current_date) &
+        Q(id__in=Subquery(subquery.values('id')))
+    ).select_related('package', 'user')
+
+    # Set the number of items per page
+    items_per_page = 10
+    paginator = Paginator(unique_journeys, items_per_page)
+
+    page = request.GET.get('page')
+    try:
+        journeys = paginator.page(page)
+    except PageNotAnInteger:
+        # If the page is not an integer, show the first page
+        journeys = paginator.page(1)
+    except EmptyPage:
+        # If the page is out of range, show the last page
+        journeys = paginator.page(paginator.num_pages)
+
+    return render(request, 'ongoing_bookings.html', {'journeys': journeys})
+
+
+@staff_member_required
+def history_bookings(request):
+    current_date = timezone.now().date()
+
+    # Retrieve history journeys for travelers
+    # Group passengers by user and package ID, and select the first passenger (ordered by id) for each user
+    subquery = Passenger.objects.filter(
+        Q(package__end_date__lt=current_date) &
+        Q(user__is_traveller=True) &
+        Q(user=OuterRef('user'))
+    ).order_by('user', 'id')[:1]
+
+    history_journeys = Passenger.objects.filter(
+        Q(package__end_date__lt=current_date) &
+        Q(id__in=Subquery(subquery.values('id')))
+    ).select_related('package', 'user')
+
+    # Set the number of items per page
+    items_per_page = 10
+    paginator = Paginator(history_journeys, items_per_page)
+
+    page = request.GET.get('page')
+    try:
+        journeys = paginator.page(page)
+    except PageNotAnInteger:
+        # If the page is not an integer, show the first page
+        journeys = paginator.page(1)
+    except EmptyPage:
+        # If the page is out of range, show the last page
+        journeys = paginator.page(paginator.num_pages)
+
+    return render(request, 'history_bookings.html', {'journeys': journeys})
+
+def update_booking_status(request, user_id, package_id):
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        package = TravelPackage.objects.get(pk=package_id)
+
+        try:
+            booking = Booking.objects.get(user_id=user_id, package_id=package_id)
+        except Booking.DoesNotExist:
+            # Handle the case where the booking doesn't exist for this user and package
+            # You can redirect to an error page or return an error message
+            return render(request, 'booking_not_found.html')  # Create this template
+
+        # Define separate subjects and messages based on the status
+        if status == 'Pending':
+            subject = f'Booking Status Update for Booking ID {package.package_name}'
+            message = f'Your booking status has been updated to: Pending'
+        elif status == 'Confirmed':
+            subject = f'Booking Status Update for Booking ID {package.package_name}'
+            login_url = request.build_absolute_uri(reverse('log'))  # Adjust the URL name if needed
+            message = f"Your booking status has been Confirmed . Now you can Login to NIWI TRAVELS and make the payment.Click here to '{ login_url}'"
+        elif status == 'Cancelled':
+            subject = f'Booking Status Update for Booking ID {package.package_name}'
+            login_url = request.build_absolute_uri(reverse('log'))  # Adjust the URL name if needed
+            message = f"Your booking status has been Cancelled due to the incorrect entrty of information of the Passengers.Login to NIWI TRAVELS and reenter the data again. We are happy to help you.Click here to login '{ login_url}'"
+        else:
+            # Handle an invalid status here (if needed)
+            return render(request, 'invalid_status.html')  # Create this template
+
+        booking.status = status
+        booking.save()
+
+        # Send an email notification
+        from_email = 'godwinbmenachery2024a@mca.ajce.in'  # Replace with your email
+        recipient_list = [booking.user.email]  # Use the email of the booking user
+
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+    return redirect(upcoming_bookings)

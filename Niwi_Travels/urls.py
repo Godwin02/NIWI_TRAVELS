@@ -58,12 +58,11 @@ urlpatterns = [
     path('history-journeys/', views.history_journeys, name='history_journeys'),
     path('ongoing-journeys/', views.ongoing_journeys, name='ongoing_journeys'),
     path('cancel_booking/<int:package_id>/', views.cancel_booking, name='cancel_booking'),
-
-
-
-
-
-
+    path('bookings/', views.upcoming_bookings, name='admin_bookings'),
+    path('passenger_count/<int:package_id>/', views.passenger_count, name='passenger_count'),
+    path('ongoing-bookings/', views.ongoing_bookings, name='ongoing_journeys'),
+    path('history-bookings/', views.history_bookings, name='history_journeys'),
+    path('update_booking_status/<int:user_id>/<int:package_id>/', views.update_booking_status, name='update_booking_status'),
 
 
 

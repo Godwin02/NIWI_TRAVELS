@@ -97,3 +97,28 @@ class Passenger(models.Model):
     
 
 
+from django.utils import timezone
+class Booking(models.Model):
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+        ('Cancelled', 'Cancelled'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    package = models.ForeignKey(TravelPackage, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    # Fields related to payment
+    # total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    # payment_method = models.CharField(max_length=50)
+    # payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='Pending')
+    # payment_date = models.DateTimeField(blank=True, null=True)
+    
+    # Add other common fields for your Booking model
+
+    def __str__(self):
+        return f'Booking ID: {self.id}, User: {self.user}, Package: {self.package}, Status: {self.status}'
+    
