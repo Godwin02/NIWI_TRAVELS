@@ -315,6 +315,18 @@
                             <td>{{ user.driver.date_of_birth }}</td>
                             <td>{{ user.driver.location }}</td>
                             <td>{{ user.driver.verification }}</td>
+                        <td>
+                            <form method="post" action="{% url 'update_verification_status' user.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="verification_status" value="rejected">
+                                <button type="submit" class="reject-button">Reject</button>
+                            </form>
+                        </td>
+                        <td>
+                            {% if user.driver.email_sent %}
+                                Email Sent: {{ user.driver.email_sent }}
+                            {% endif %}
+                        </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -373,6 +385,18 @@
                         <td>{{ user.driver.date_of_birth }}</td>
                         <td>{{ user.driver.location }}</td>
                         <td>{{ user.driver.verification }}</td>
+                        <td>
+                            <form method="post" action="{% url 'update_verification_status' user.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="verification_status" value="approved">
+                                <button type="submit" class="approve-button">Approve</button>
+                            </form>
+                        </td>
+                        <td>
+                            {% if user.driver.email_sent %}
+                                Email Sent: {{ user.driver.email_sent }}
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
