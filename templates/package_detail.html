@@ -187,20 +187,28 @@ p {
         <section id="home-section" class="hero">
             <h1>Package Details</h1>
             <h2>{{ package.package_name }}</h2>
-            <p><strong>Destination:</strong> {{ package.destination }}</p>
-            <p><strong>Price:</strong> ₹{{ package.price }}</p>
-            <p><strong>Start Date:</strong> {{ package.start_date }}</p>
-            <p><strong>End Date:</strong> {{ package.end_date }}</p>
-            <p><strong>Duration:</strong> {{ package.duration }} Days</p>
-            <p><strong>Accommodation:</strong> {{ package.accommodation }}</p>
-            <p><strong>Transportation:</strong> {{ package.transportation }}</p>
-            <p><strong>Activities:</strong> {{ package.activities }}</p>
-            <p><strong>Inclusions:</strong> {{ package.inclusions }}</p>
-            <p><strong>Exclusions:</strong> {{ package.exclusions }}</p>
-            <p><strong>Category:</strong> {{ package.category }}</p>
-            <p><strong>Availability:</strong> {{ package.availability }}</p>
-            <p><strong>Booking Deadline:</strong> {{ package.booking_deadline }}</p>
-            <p><strong>Cancellation Policy:</strong> {{ package.cancellation_policy }}</p>
+            <p>
+                Explore the breathtaking destination of {{ package.destination }} on an unforgettable journey. 
+                You can enjoy this incredible adventure for just ₹{{ package.price }}. 
+                The journey begins on {{ package.start_date }} and concludes on {{ package.end_date }}. 
+                Over the course of {{ package.duration }} days, you'll experience a mix of excitement and discovery.
+            </p>
+            <p>
+                During your trip, you'll be accommodated in {{ package.accommodation }} lodgings, 
+                and your transportation will be provided with {{ package.transportation }}. 
+                You'll have the opportunity to partake in a wide array of {{ package.activities }}.
+            </p>
+            <p>
+                Your journey includes {{ package.inclusions }}, ensuring a memorable experience. 
+                Please note that {{ package.exclusions }} are not covered.
+            </p>
+            <p>
+                The adventure falls into the {{ package.category }} category, 
+                and there are only {{ package.availability }} spots available, so be sure to book soon. 
+                Secure your place by {{ package.booking_deadline }} and review our {{ package.cancellation_policy }} for peace of mind.
+            </p>
+            
+            
 
             <!-- Display the package images -->
             <h2>Package Images</h2>

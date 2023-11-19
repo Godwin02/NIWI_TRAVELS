@@ -181,33 +181,60 @@ tr:hover {
     </div>
     
     <div class="table-container">
-        <div class="card-container">
-            {% for package in running_packages %}
-            <div class="card">
-                <a href="{% url 'package_requests' package.id %}">
-                    <img src="{{ package.packageimage_set.first.image.url }}" class="card-img-top" alt="{{ package.package_name }} Image">
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title">{{ package.package_name }}</h5>
-                    <p class="card-text">₹{{ package.price }} per head</p>
-                    <p class="card-text">{{ package.duration }} Days Tour</p>
-                    <p class="card-text">{{ package.booking_deadline }} is the Last Date for Booking<br>{{ package.start_date }} is the Starting date.<br> {{ package.end_date }} is the end date.</p>
-                    <div class="star d-flex clearfix">
-                        <div class="mr-auto float-left">
-                            <span class="ion-ios-star"></span>
-                            <span class="ion-ios-star"></span>
-                            <span class="ion-ios-star"></span>
-                            <span class="ion-ios-star"></span>
-                            <span class="ion-ios-star"></span>
-                        </div>
-                        <!-- <div class="float-right">
-                            <span class="rate">{{ bookings.passenger_limit }} number of seats available. </span>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
+
+    <div class="package-details">
+        <h1>{{ package.package_name }} Details</h1>
+        <p>Price: ₹{{ package.price }} per head</p>
+        <!-- Add other package details as needed -->
+    </div>
+<div class="booking-details">
+        <!-- package_requests.html -->
+  <main>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Package ID</th>
+                <th>Location</th>
+                <th>Package Name</th>
+                <th>Start Date</th>
+                <th>User Email</th>
+                <th>Passenger Details</th>
+                <th>Verification</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.package_id }}</td>
+                    <td>{{ booking.location }}</td>
+                    <td>{{ booking.package_name }}</td>
+                    <td>{{ booking.start_date }}</td>
+                    <td>{{ booking.user_email }}</td>
+                    <td><a href="{{ booking.passenger_details_url }}">View Details</a></td>
+                    <td>{{ booking.verification_status }}</td>
+                    <td>
+                        <form method="post" action="{% url 'update_booking_status' booking.user_id booking.package_id %}">
+                            {% csrf_token %}
+                            <select name="status">
+                                <option value="Pending" {% if booking.verification_status == 'Pending' %}selected{% endif %}>Pending</option>
+                                <option value="Confirmed" {% if booking.verification_status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                <option value="Cancelled" {% if booking.verification_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8">No bookings found.</td>
+                </tr>
             {% endfor %}
-        </div>
-        
+        </tbody>
+    </table>
+  </main>
+
+</div>
+
 </body>
 </html>

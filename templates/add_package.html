@@ -471,8 +471,20 @@
                     <td>
                         <select id="status" name="status" required>
                             <option value="Running" >Running</option>
-                            <option value="Paused">Paused</option>
+                            <option value="Pending">Pending</option>
                         </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="feed">Feed</label>
+                    </td>
+                    <td>
+                        <select id="accommodation" name="feed" required>
+                            <option value="Save">Save</option>
+                            <option value="Post">Post</option>
+                        </select>
+                        <span id="accommodation-validation-message" class="validation-message"></span>
                     </td>
                 </tr>
             </table>

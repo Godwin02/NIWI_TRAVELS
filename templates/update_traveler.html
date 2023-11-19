@@ -16,7 +16,46 @@
             .container {
             margin-top: 80px; /* Adjust the top margin to control the space below the navbar */
         }
+        .profile-table input[type="text"],
+.profile-table select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
+/* Style for the select element */
+.profile-table select {
+    height: 34px;
+}
+
+/* Style for the validation messages */
+.profile-table .validation-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Style for the Update Profile button */
+.profile-table #update-profile-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.profile-table #update-profile-button:hover {
+    background-color: #0056b3;
+}
+
+.profile-table #update-profile-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
         .profile-table {
             width: 100%;
             max-width: 800px; /* Set a maximum width for the table */

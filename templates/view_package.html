@@ -156,6 +156,7 @@
     </div>
     <div class="main-content">
     <h2>View Travel Packages</h2>
+    <h3>Running Packages</h3>
     <table class="table">
         <form method="get" class="search-form">
             <input type="date" name="search_date" placeholder="Search by start date" class="search-input">
@@ -170,11 +171,12 @@
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Status</th>
+                <th>Feed</th>
             </tr>
         </thead>
         <tbody>
-            {% for package in packages %}
-                <tr>
+            {% for package in running_packages %}
+            <tr>
                     <td>{{ package.id }}</td>
                     <td>{{ package.package_name }}</td>
                     <td>{{ package.destination }}</td>
@@ -182,6 +184,68 @@
                     <td>{{ package.start_date }}</td>
                     <td>{{ package.end_date }}</td>
                     <td>{{ package.status }}</td>
+                    <td>{{ package.feed }}</td>
+  
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7">No travel packages available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7">
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if running_packages.has_previous %}
+                                <a href="?page_running=1">&laquo; first</a>
+                                <a href="?page_running={{ running_packages.previous_page_number }}">previous</a>
+                            {% endif %}
+                    
+                            <span class="current-page">Page {{ running_packages.number }} of {{ running_packages.paginator.num_pages }}.</span>
+                    
+                            {% if running_packages.has_next %}
+                                <a href="?page_running={{ running_packages.next_page_number }}">next</a>
+                                <a href="?page_running={{ running_packages.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <h3>Paused Packages</h3>
+    <table class="table">
+        <form method="get" class="search-form">
+            <input type="date" name="search_date" placeholder="Search by start date" class="search-input">
+            <button type="submit" class="search-button">Search By Date</button>
+        </form>
+        <thead>
+            <tr>
+                <th>Package ID</th>
+                <th>Package Name</th>
+                <th>Destination</th>
+                <th>Price</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Feed</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for package in paused_packages %}
+            <tr>
+                    <td>{{ package.id }}</td>
+                    <td>{{ package.package_name }}</td>
+                    <td>{{ package.destination }}</td>
+                    <td>{{ package.price }}</td>
+                    <td>{{ package.start_date }}</td>
+                    <td>{{ package.end_date }}</td>
+                    <td>{{ package.status }}</td>
+                    <td>{{ package.feed }}</td>
                     <td>
                         <a href="{% url 'edit_package' package.id %}" class="edit-button">Edit</a>
                     </td>
@@ -197,16 +261,16 @@
                 <td colspan="7">
                     <div class="pagination">
                         <span class="step-links">
-                            {% if packages.has_previous %}
-                                <a href="?page=1">&laquo; first</a>
-                                <a href="?page={{ packages.previous_page_number }}">previous</a>
+                            {% if paused_packages.has_previous %}
+                                <a href="?page_paused=1">&laquo; first</a>
+                                <a href="?page_paused={{ paused_packages.previous_page_number }}">previous</a>
                             {% endif %}
-
-                            <span class="current-page">Page {{ packages.number }} of {{ packages.paginator.num_pages }}.</span>
-
-                            {% if packages.has_next %}
-                                <a href="?page={{ packages.next_page_number }}">next</a>
-                                <a href="?page={{ packages.paginator.num_pages }}">last &raquo;</a>
+                    
+                            <span class="current-page">Page {{ paused_packages.number }} of {{ paused_packages.paginator.num_pages }}.</span>
+                    
+                            {% if paused_packages.has_next %}
+                                <a href="?page_paused={{ paused_packages.next_page_number }}">next</a>
+                                <a href="?page_paused={{ paused_packages.paginator.num_pages }}">last &raquo;</a>
                             {% endif %}
                         </span>
                     </div>
