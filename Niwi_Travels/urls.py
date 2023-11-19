@@ -63,6 +63,14 @@ urlpatterns = [
     path('ongoing-bookings/', views.ongoing_bookings, name='ongoing_journeys'),
     path('history-bookings/', views.history_bookings, name='history_journeys'),
     path('update_booking_status/<int:user_id>/<int:package_id>/', views.update_booking_status, name='update_booking_status'),
+    path('payment/<int:booking_id>/', views.payment, name='payment'),
+    path('booking_list/', views.booking_list, name='booking_list'),
+    path('pay/<int:booking_id>/', views.pay, name='pay'),
+    path('success/<int:booking_id>/',views.success, name='success'),
+    path('package_requests/<int:package_id>/', views.package_requests, name='package_requests'),
+    path('passenger_details/<int:package_id>/', views.passenger_details, name='passenger_details'),
+    path('delete_passenger/<int:passenger_id>/', views.delete_passenger, name='delete_passenger'),
+
 
 
 

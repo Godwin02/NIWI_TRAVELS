@@ -50,6 +50,10 @@ class TravelPackage(models.Model):
         ('Included', 'Included'),
         ('Excluded', 'Excluded'),
     )
+    FEED_CHOICES = (
+        ('Save', 'Save'),
+        ('Post', 'Post'),
+    )
 
     package_name = models.CharField(max_length=100)
     description = models.TextField()
@@ -72,7 +76,9 @@ class TravelPackage(models.Model):
     tags = models.CharField(max_length=100)
     cancellation_policy = models.TextField()
     # booking_link = models.URLField()
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Running')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    feed = models.CharField(max_length=10, choices=FEED_CHOICES, default='Save')
+
 
     def __str__(self):
         return self.package_name
@@ -110,6 +116,7 @@ class Booking(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    passenger_limit = models.IntegerField(default=1)  # Adjust default value as needed
     
     # Fields related to payment
     # total_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -122,3 +129,16 @@ class Booking(models.Model):
     def __str__(self):
         return f'Booking ID: {self.id}, User: {self.user}, Package: {self.package}, Status: {self.status}'
     
+class Payment(models.Model):
+    booking=models.ForeignKey(Booking, on_delete=models.CASCADE, blank=True, null=True)
+    is_paid = models.BooleanField(default=False)
+    razor_pay_order_id=models.CharField(max_length=100, blank=True, null=True)
+    razor_pay_payment_id=models.CharField(max_length=100, blank=True, null=True)
+    razor_pay_payment_signature=models.CharField(max_length=100, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link the payment to a customer
+    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Store the payment amount
+    payment_date = models.DateTimeField(auto_now_add=True)  # Date and time of the payment
+    # Add other fields as per your requirements, like payment status, transaction ID, etc.
+    
+    def __str__(self):
+        return f"Payment of {self.amount} by {self.customer.username} on {self.payment_date}"
