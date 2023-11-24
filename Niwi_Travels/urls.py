@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from .views import MyPasswordResetView, MyPasswordResetDoneView, MyPasswordResetConfirmView, MyPasswordResetCompleteView
-
+from .views import export_passenger_data_to_excel
 from django.conf.urls.static import static
 urlpatterns = [
     path('admins/',views.admin,name='admin'),
@@ -59,17 +59,19 @@ urlpatterns = [
     path('ongoing-journeys/', views.ongoing_journeys, name='ongoing_journeys'),
     path('cancel_booking/<int:package_id>/', views.cancel_booking, name='cancel_booking'),
     path('bookings/', views.upcoming_bookings, name='admin_bookings'),
+    path('verified_bookings/', views.verified_bookings, name='verified_bookings'),
     path('passenger_count/<int:package_id>/', views.passenger_count, name='passenger_count'),
     path('ongoing-bookings/', views.ongoing_bookings, name='ongoing_journeys'),
     path('history-bookings/', views.history_bookings, name='history_journeys'),
     path('update_booking_status/<int:user_id>/<int:package_id>/', views.update_booking_status, name='update_booking_status'),
     path('payment/<int:booking_id>/', views.payment, name='payment'),
-    path('booking_list/', views.booking_list, name='booking_list'),
+    path('booking_list/<int:package_id>', views.booking_list, name='booking_list'),
     path('pay/<int:booking_id>/', views.pay, name='pay'),
     path('success/<int:booking_id>/',views.success, name='success'),
     path('package_requests/<int:package_id>/', views.package_requests, name='package_requests'),
     path('passenger_details/<int:package_id>/', views.passenger_details, name='passenger_details'),
     path('delete_passenger/<int:passenger_id>/', views.delete_passenger, name='delete_passenger'),
+    path('export-passenger-data/<int:package_id>/', export_passenger_data_to_excel, name='export_passenger_data_to_excel'),
 
 
 
