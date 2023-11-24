@@ -110,16 +110,14 @@
                     <h5 class="card-title">{{ package_with_images.package.package_name }}</h5>
                     <p class="card-text">Start Date: {{ package_with_images.package.start_date }}</p>
                     <p class="card-text">End Date: {{ package_with_images.package.end_date }}</p>
-                    {% for package_with_images in packages_with_images %}
-                    <!-- Other package details -->
+                    
                     <p class="card-text">
                         <a href="{% url 'passenger_details' package_with_images.package.id %}" class="view-details-link">
                             View Passengers {{ package_with_images.booking.passenger_limit }}
                         </a>
                     </p>
-                {% endfor %}
-                    <!-- Add more details as needed -->
-    
+                    
+                    
                 {% if user.is_authenticated %}
                     <form method="POST" action="{% url 'cancel_booking' package_id=package_with_images.package.id %}">
                         {% csrf_token %}
