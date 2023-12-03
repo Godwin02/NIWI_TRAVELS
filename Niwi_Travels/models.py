@@ -1,9 +1,6 @@
 from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 class User(AbstractUser):
     is_traveller = models.BooleanField(default=True)
@@ -94,7 +91,15 @@ class PackageImage(models.Model):
         return f"Image for {self.package.package_name}"
     
 
+class Passenger(models.Model):
+    passenger_name = models.CharField(max_length=100)
+    passenger_age = models.PositiveIntegerField()
+    proof_of_id = models.FileField(upload_to='passenger_ids/')
+    package = models.ForeignKey(TravelPackage, on_delete=models.CASCADE)  # Assuming TravelPackage is your package model
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Associate each passenger with a user
 
+    def __str__(self):
+        return self.passenger_name
     
 
 
@@ -112,7 +117,6 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     passenger_limit = models.IntegerField(default=1)  # Adjust default value as needed
-    children=models.IntegerField(default=0)
     
     # Fields related to payment
     # total_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -124,21 +128,6 @@ class Booking(models.Model):
 
     def __str__(self):
         return f'Booking ID: {self.id}, User: {self.user}, Package: {self.package}, Status: {self.status}'
-
-class Passenger(models.Model):
-    passenger_name = models.CharField(max_length=100)
-    passenger_age = models.PositiveIntegerField()
-    proof_of_id = models.FileField(upload_to='passenger_ids/')
-    package = models.ForeignKey(TravelPackage, on_delete=models.CASCADE)  # Assuming TravelPackage is your package model
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Associate each passenger with a user
-    status = models.CharField(max_length=20, default='Pending')  # Assuming 'Pending' is the default status
-    def __str__(self):
-        return self.passenger_name
-
-@receiver(post_save, sender=Booking)
-def update_passengers_on_booking_update(sender, instance, **kwargs):
-    # Update Passenger instances related to the updated Booking instance
-    Passenger.objects.filter(package=instance.package, user=instance.user).update(status=instance.status)
     
 class Payment(models.Model):
     booking=models.ForeignKey(Booking, on_delete=models.CASCADE, blank=True, null=True)
@@ -153,10 +142,3 @@ class Payment(models.Model):
     
     def __str__(self):
         return f"Payment of {self.amount} by {self.customer.username} on {self.payment_date}"
-    
-
-class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    package = models.ForeignKey(TravelPackage, on_delete=models.CASCADE)
-    stars = models.IntegerField(null=False, blank=False, default=0)
-    description = models.TextField(blank=True, null=True)
