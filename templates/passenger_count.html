@@ -126,8 +126,7 @@ tr:hover {
         <a href="/drivers">Drivers</a> 
         <a href="/upload_package">Add Package</a>
         <a href="/view-packages">View Package</a>
-        <a href="/bookings">Verification Requests</a>
-        <a href="/verified_bookings">Verified Bookings</a>
+        <a href="/bookings">Upcoming Journeys</a>
         <a href="/ongoing-bookings" id="logout-link">Ongoing Journeys</a>
         <a href="/history-bookings">History Journeys</a>
         <a href="/logout" id="logout-link">Logout</a>        
@@ -138,14 +137,9 @@ tr:hover {
     </div>
         <div class="main-content">
             <h1>Passengers Details</h1>
-            <h3>{{ package.availability }}  number of seats left for booking. </h3> 
-            
-            <h3>{{ sum_of_children }} number of children in this trip</h3>
         </div>
         <div class="table-container">
                 <main>
-                    <a href="{% url 'export_passenger_data_to_excel' package_id=package.id %}" class="btn btn-primary">Download🗎</a>
-
             <table border="1">
                 <tr>
                     <th>Name</th>
@@ -175,7 +169,6 @@ tr:hover {
                     <a href="?page={{ passengers.paginator.num_pages }}">Last</a>
                 {% endif %}
             </div>
-
         </main>
     </div>
    

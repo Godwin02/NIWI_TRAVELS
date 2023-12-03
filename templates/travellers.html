@@ -135,6 +135,7 @@ tr:hover {
                     <tr>
                         <th>Username</th>
                         <th>Email</th>
+                        <th>Status</th>
                         <!-- Add more user attributes as needed -->
                     </tr>
                 </thead>
@@ -143,6 +144,7 @@ tr:hover {
                         <tr>
                             <td>{{ user_profile.username }}</td>
                             <td>{{ user_profile.email }}</td>
+                            <td>{{ user_profile.is_active }}</td>
                             <!-- Add more user attributes as needed -->
                         </tr>
                     {% endfor %}

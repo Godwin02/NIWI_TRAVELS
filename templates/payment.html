@@ -180,14 +180,12 @@
           </div>
         </div>
       </nav>
-      <div class="booking-form-box">
-        <h1>Payment Page</h1>
-        <p style="text-align: center;">Travel Package: {{ travel_package.package_name }}</p>
-        <p style="text-align: center;">Starting date of Journey: {{ travel_package.start_date }}</p>
-        <p style="text-align: center;">End date of Journey: {{ travel_package.end_date }}</p>
-        <p style="text-align: center;">Total Amount: ₹{{ total_amount|floatformat:0 }}</p>
-        <p style="text-align: center;">GST Amount (15%): ₹{{ gst_amount|floatformat:0 }}</p>
-        <p style="text-align: center;">Final Price to Pay: ₹{{ final_price|floatformat:0 }}</p>
+<div class="booking-form-box">
+    <h1>Payment Page</h1>
+    <p style="text-align: center;">Travel Package: {{ travel_package.package_name }}</p>
+    <P style="text-align: center;">Starting date of Journey: {{ travel_package.start_date }}</P>
+    <P style="text-align: center;">End date of Journey: {{ travel_package.end_date }}</P>
+    <p style="text-align: center;">Total Amount: ₹{{ total_amount|floatformat:0 }}</p>
     
 
     <!-- Include your payment form here -->

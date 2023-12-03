@@ -134,11 +134,7 @@
             
             <!-- Existing passenger information input fields -->
             <label for="passenger-limit">Enter the number of passengers:</label>
-            <input type="number" id="passenger-limit" name="passenger-limit" min="1" value="1"><br>
-            <label for="children">Enter the number of children with age less than 6 years of old.:</label>
-            <input type="number" id="children" name="children" max="10" value="0" min="0">
-            <div id="children-error" style="color: red;"></div>
-
+            <input type="number" id="passenger-limit" name="passenger-limit" min="1" placeholder="1">
             <div>
                 <input type="text" name="passenger_name" id="passenger_name" placeholder="Passenger Name">
                 <span class="error-message" id="passenger-name-error"></span>
@@ -233,23 +229,7 @@ Please note that the above terms and conditions are a general example and may ne
     </div>
 </div>
 
-<script>
-    // Real-time validation for the number of children
-    const childrenInput = document.getElementById("children");
-    const childrenError = document.getElementById("children-error");
-
-    childrenInput.addEventListener("input", function() {
-        const numberOfChildren = parseInt(childrenInput.value);
-
-        if (isNaN(numberOfChildren) || numberOfChildren < 0) {
-            childrenError.textContent = 'Enter a valid number of children.';
-        } else if (numberOfChildren > 9) {
-            childrenError.textContent = 'Maximum number of children allowed is 10.';
-        } else {
-            childrenError.textContent = '';
-        }
-    });
-</script>
+        
         <script>
             // Real-time validation for Passenger Name
             const passengerNameInput = document.getElementById("passenger_name");
@@ -272,20 +252,14 @@ Please note that the above terms and conditions are a general example and may ne
         
             passengerAgeInput.addEventListener("input", function() {
                 const age = passengerAgeInput.value.trim();
-
                 if (age === '') {
                     passengerAgeError.textContent = 'Passenger Age is required.';
                 } else if (isNaN(age) || parseInt(age) < 0) {
                     passengerAgeError.textContent = 'Passenger Age must be a non-negative number.';
-                } else if (parseInt(age) < 6) {
-                    passengerAgeError.textContent = 'Passenger Age less than 6 years or older need not to enter the details.';
-                } else if (parseInt(age) > 100) {
-                    passengerAgeError.textContent = 'Passenger Age is invalid (greater than 100).';
                 } else {
                     passengerAgeError.textContent = '';
                 }
             });
-
         
             // Real-time validation for Proof of ID
             const proofOfIdInput = document.getElementById("proof_of_id");
@@ -401,20 +375,15 @@ Please note that the above terms and conditions are a general example and may ne
             // Function to validate passenger age
             function validatePassengerAge(input, errorElement) {
                 var age = input.value.trim();
-
                 if (age === "") {
                     errorElement.textContent = "Passenger Age is required.";
                 } else if (isNaN(age) || parseInt(age) < 0) {
                     errorElement.textContent = "Passenger Age must be a non-negative number.";
-                } else if (parseInt(age) < 6) {
-                    errorElement.textContent = "Passenger Age less than 6 years or older need not to enter the details.";
-                } else if (parseInt(age) > 100) {
-                    errorElement.textContent = "Passenger Age is invalid (greater than 100).";
                 } else {
                     errorElement.textContent = '';
                 }
             }
-
+        
             // Function to validate proof of ID
             function validateProofOfId(input, errorElement) {
                 var file = input.files[0];
@@ -464,24 +433,6 @@ Please note that the above terms and conditions are a general example and may ne
                 // If no errors are found, the form will be submitted
                 return true;
             }
-        </script>
-        <script>
-            // Assuming you have a variable `maxSeats` containing the available seats
-            var maxSeats = {{ package.availability }};
-            
-            // Set the max attribute of the passenger-limit input
-            document.getElementById("passenger-limit").max = maxSeats;
-        
-            // Add an input event listener to dynamically update the max attribute
-            document.getElementById("passenger-limit").addEventListener("input", function() {
-                var currentValue = parseInt(this.value);
-                if (currentValue > maxSeats) {
-                    this.value = maxSeats;  // If the user enters a value greater than available seats, set it to the maxSeats
-                }
-                if (currentValue === maxSeats){
-                    alert("Capacity for booking Reached");
-                }
-            });
         </script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
