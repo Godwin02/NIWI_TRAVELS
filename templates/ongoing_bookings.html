@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -115,6 +116,45 @@ tr:hover {
     .page-links a:hover {
         text-decoration: underline; /* Add an underline on hover */
     }
+    .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.card {
+    flex: 0 0 calc(33.33% - 20px); /* Adjust width as needed with margin */
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 200px; /* Adjust the height as needed */
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    margin-bottom: 10px;
+}
+
+.star {
+    color: rgb(255, 0, 0); /* or your preferred color */
+}
+
+
     </style>
 </head>
 <body>
@@ -130,56 +170,46 @@ tr:hover {
         <a href="/verified_bookings">Verified Bookings</a>
         <a href="/ongoing-bookings" id="logout-link">Ongoing Journeys</a>
         <a href="/history-bookings">History Journeys</a>
-        <a href="/logout" id="logout-link">Logout</a>        
+        <a href="/logout" id="logout-link">Logout</a> 
     </div>
     <div class="navbar">
         <h1>Welcome Admin</h1>
         <p>This is where you can manage users, packages, and ongoing trips.</p>
     </div>
-        <div class="main-content">
-            <h1>Ongoing Journeys</h1>
-        </div>
-        <div class="table-container">
-                <main>
-                <table border="1">
-                    <tr>
-                        <th>Package ID</th>
-                        <th>Username</th>
-                        <th>Location</th>
-                        <th>Package Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Passenger Details</th>
-                    </tr>
-                    {% for journey in journeys %}
-                    <tr>
-                        <td>{{ journey.package.id }}</td>
-                        <td>{{ journey.user.username }}</td>
-                        <td>{{ journey.user.traveller.country }}</td>
-                        <td>{{ journey.package.package_name }}</td>
-                        <td>{{ journey.package.start_date }}</td>
-                        <td>{{ journey.package.end_date }}</td>
-                        <td><a href="{% url 'passenger_count' journey.package.id %}">View Details</a></td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7">No ongoing journeys found.</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-                <div class="pagination">
-                    <span class="current">Page {{ journeys.number }} of {{ journeys.paginator.num_pages }}.</span>
-                    {% if journeys.has_previous %}
-                        <a href="?page=1">First</a>
-                        <a href="?page={{ bookings.previous_page_number }}">Previous</a>
-                    {% endif %}
-                    {% if journeys.has_next %}
-                        <a href="?page={{ bookings.next_page_number }}">Next</a>
-                        <a href="?page={{ bookings.paginator.num_pages }}">Last</a>
-                    {% endif %}
-                </div>
-            </main>
-        </div>
+    <div class="main-content">
+    <h1>Ongoing Travel Packages</h1>
+    </div>
     
+    <div class="table-container">
+        <div class="card-container">
+            {% if running_packages %}
+            {% for package in running_packages %}
+            <div class="card">
+                <a href="{% url 'ongoing_passengers' package.id %}">
+                    <img src="{{ package.packageimage_set.first.image.url }}" class="card-img-top" alt="{{ package.package_name }} Image">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ package.package_name }}</h5>
+                    <p class="card-text">{{ package.booking_deadline }} is the Last Date for Booking<br>{{ package.start_date }} is the Starting date.<br> {{ package.end_date }} is the end date.</p>
+                    <div class="star d-flex clearfix">
+                        <div class="mr-auto float-left">
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                        </div>
+                        <!-- <div class="float-right">
+                            <span class="rate">{{ bookings.passenger_limit }} number of seats available. </span>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="card">No Ongoing Journeys to show</div>
+            {% endif %}
+        </div>
+        
 </body>
 </html>
