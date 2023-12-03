@@ -62,7 +62,9 @@ urlpatterns = [
     path('verified_bookings/', views.verified_bookings, name='verified_bookings'),
     path('passenger_count/<int:package_id>/', views.passenger_count, name='passenger_count'),
     path('ongoing-bookings/', views.ongoing_bookings, name='ongoing_journeys'),
+    path('ongoing_passengers/<int:package_id>/', views.ongoing_passengers, name='ongoing_passengers'),
     path('history-bookings/', views.history_bookings, name='history_journeys'),
+    path('history_passengers/<int:package_id>/', views.history_passengers, name='history_passengers'),
     path('update_booking_status/<int:user_id>/<int:package_id>/', views.update_booking_status, name='update_booking_status'),
     path('payment/<int:booking_id>/', views.payment, name='payment'),
     path('booking_list/<int:package_id>', views.booking_list, name='booking_list'),
@@ -72,6 +74,7 @@ urlpatterns = [
     path('passenger_details/<int:package_id>/', views.passenger_details, name='passenger_details'),
     path('delete_passenger/<int:passenger_id>/', views.delete_passenger, name='delete_passenger'),
     path('export-passenger-data/<int:package_id>/', export_passenger_data_to_excel, name='export_passenger_data_to_excel'),
+    path('submit_rating/<int:package_id>/<int:stars>/', views.submit_rating, name='submit_rating'),
 
 
 

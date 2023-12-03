@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 class User(AbstractUser):
     is_traveller = models.BooleanField(default=True)
     is_driver = models.BooleanField(default=False)
@@ -151,3 +153,10 @@ class Payment(models.Model):
     
     def __str__(self):
         return f"Payment of {self.amount} by {self.customer.username} on {self.payment_date}"
+    
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    package = models.ForeignKey(TravelPackage, on_delete=models.CASCADE)
+    stars = models.IntegerField(null=False, blank=False, default=0)
+    description = models.TextField(blank=True, null=True)
