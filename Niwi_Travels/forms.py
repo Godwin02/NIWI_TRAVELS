@@ -29,3 +29,33 @@ class PassengerInfoForm(forms.Form):
 
 
     # You can add more fields as needed for your application.
+# forms.py
+
+# forms.py
+from django import forms
+from django.forms import inlineformset_factory
+from .models import CustomPackage, Day
+
+class TravelPackageForm(forms.ModelForm):
+    # Add this field for package image
+    package_image = forms.ImageField(label='Package Image', required=False)
+
+    class Meta:
+        model = CustomPackage
+        fields = ['category', 'name', 'description', 'days', 'nights', 'package_image','price']
+class DayForm(forms.ModelForm):
+    class Meta:
+        model = Day
+        fields = ['day_number', 'image', 'image_description']
+
+DayFormSet = inlineformset_factory(CustomPackage, Day, form=DayForm, extra=1)
+
+class CustomPackageForm(forms.ModelForm):
+    class Meta:
+        model = CustomPackage
+        fields = ['category', 'name', 'description', 'days', 'nights', 'price', 'package_image']
+
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
+
