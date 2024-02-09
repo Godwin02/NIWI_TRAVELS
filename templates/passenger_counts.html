@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -116,45 +115,6 @@ tr:hover {
     .page-links a:hover {
         text-decoration: underline; /* Add an underline on hover */
     }
-    .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.card {
-    flex: 0 0 calc(33.33% - 20px); /* Adjust width as needed with margin */
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.card-img-top {
-    width: 100%;
-    height: 200px; /* Adjust the height as needed */
-    object-fit: cover;
-}
-
-.card-body {
-    padding: 20px;
-}
-
-.card-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.card-text {
-    margin-bottom: 10px;
-}
-
-.star {
-    color: rgb(255, 0, 0); /* or your preferred color */
-}
-
-
     </style>
 </head>
 <body>
@@ -166,77 +126,51 @@ tr:hover {
         <a href="/drivers">Drivers</a> 
         <a href="/upload_package">Add Package</a>
         <a href="/view-packages">View Package</a>
-        <a href="/bookings">Verification Requests</a>
-        <a href="/verified_bookings">Verified Bookings</a>
+        <a href="/bookings">Upcoming Journeys</a>
         <a href="/ongoing-bookings" id="logout-link">Ongoing Journeys</a>
         <a href="/history-bookings">History Journeys</a>
-        <a href="/logout" id="logout-link">Logout</a> 
+        <a href="/logout" id="logout-link">Logout</a>        
     </div>
     <div class="navbar">
         <h1>Welcome Admin</h1>
         <p>This is where you can manage users, packages, and ongoing trips.</p>
     </div>
-    <div class="main-content">
-    <h1>Passengers for {{ package.package_name }}</h1>
-    </div>
- 
-      
-  
-    <div class="table-container">
-
-    <div class="package-details">
-        <h1>{{ package.package_name }} Details</h1>
-        <p>Price: ₹{{ package.price }} per head</p>
-        <!-- Add other package details as needed -->
-    </div>
-<div class="booking-details">
-        <!-- package_requests.html -->
-  <main>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Package ID</th>
-                <th>Location</th>
-                <th>Package Name</th>
-                <th>Start Date</th>
-                <th>User Email</th>
-                <th>Passenger Details</th>
-                <th>Verification</th>
-                <th>Update Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for booking in bookings %}
+        <div class="main-content">
+            <h1>Passengers Details</h1>
+        </div>
+        <div class="table-container">
+                <main>
+            <table border="1">
                 <tr>
-                    <td>{{ booking.package_id }}</td>
-                    <td>{{ booking.location }}</td>
-                    <td>{{ booking.package_name }}</td>
-                    <td>{{ booking.start_date }}</td>
-                    <td>{{ booking.user_email }}</td>
-                    <td><a href="{{ booking.passenger_details_url }}">View Details</a></td>
-                    <td>{{ booking.verification_status }}</td>
-                    <td>
-                        <form method="post" action="{% url 'update_booking_status' booking.user_id booking.package_id %}">
-                            {% csrf_token %}
-                            <select name="status">
-                                <option value="Pending" {% if booking.verification_status == 'Pending' %}selected{% endif %}>Pending</option>
-                                <option value="Confirmed" {% if booking.verification_status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
-                                <option value="Cancelled" {% if booking.verification_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                            </select>
-                            <button type="submit">Update</button>
-                        </form>
-                    </td>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Proof of ID</th>
                 </tr>
-            {% empty %}
+                {% for passenger in passengers %}
                 <tr>
-                    <td colspan="8">No bookings found.</td>
+                    <td>{{ passenger.passenger_name }}</td>
+                    <td>{{ passenger.passenger_age }}</td>
+                    <td><a href="{{ passenger.proof_of_id.url }}" target="_blank">View Proof of ID</a></td>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-  </main>
-
-</div>
-
+                {% empty %}
+                <tr>
+                    <td colspan="3">No passengers found for this package.</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="pagination">
+                <span class="current">Page {{ passengers.number }} of {{ passengers.paginator.num_pages }}.</span>
+                {% if passengers.has_previous %}
+                    <a href="?page=1">First</a>
+                    <a href="?page={{ passengers.previous_page_number }}">Previous</a>
+                {% endif %}
+                {% if passengers.has_next %}
+                    <a href="?page={{ passengers.next_page_number }}">Next</a>
+                    <a href="?page={{ passengers.paginator.num_pages }}">Last</a>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+   
 </body>
 </html>

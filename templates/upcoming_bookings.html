@@ -116,6 +116,45 @@ tr:hover {
     .page-links a:hover {
         text-decoration: underline; /* Add an underline on hover */
     }
+    .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.card {
+    flex: 0 0 calc(33.33% - 20px); /* Adjust width as needed with margin */
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 200px; /* Adjust the height as needed */
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    margin-bottom: 10px;
+}
+
+.star {
+    color: rgb(255, 0, 0); /* or your preferred color */
+}
+
+
     </style>
 </head>
 <body>
@@ -128,7 +167,7 @@ tr:hover {
         <a href="/upload_package">Add Package</a>
         <a href="/view-packages">View Package</a>
         <a href="/bookings">Verification Requests</a>
-        <a href="/booking_list">Verified Bookings</a>
+        <a href="/verified_bookings">Verified Bookings</a>
         <a href="/ongoing-bookings" id="logout-link">Ongoing Journeys</a>
         <a href="/history-bookings">History Journeys</a>
         <a href="/logout" id="logout-link">Logout</a> 
@@ -138,66 +177,35 @@ tr:hover {
         <p>This is where you can manage users, packages, and ongoing trips.</p>
     </div>
     <div class="main-content">
-    <h1>Upcoming Journeys of Travellers</h1>
+    <h1>Verification Requests for the Travel Packages</h1>
     </div>
+    
     <div class="table-container">
-        <main>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Package ID</th>
-                        <th>Location</th>
-                        <th>Package Name</th>
-                        <th>Start Date</th>
-                        <th>User Email</th>
-                        <th>Passenger Details</th>
-                        <th>Verification</th>
-                        <th>Update Status</th>
-                    </tr>
-                </thead>
-        
-                <tbody>
-                    {% for booking in bookings %}
-                    <tr>
-                        <td>{{ booking.package.id }}</td>
-                        <td>{{ booking.user.traveller.country }}</td>
-                        <td>{{ booking.package.package_name }}</td>
-                        <td>{{ booking.package.start_date }}</td>
-                        <td>{{ booking.user.username }}</td>
-                        <td><a href="{% url 'passenger_count' booking.package.id %}">View Details</a></td>
-                        <td>{{ booking.status }}</td>
-                        <td>
-                            <form method="post" action="{% url 'update_booking_status' booking.user.id booking.package.id %}">
-                                {% csrf_token %}
-                                <select name="status">
-                                    <option value="Pending" {% if booking.status == 'Pending' %}selected{% endif %}>Pending</option>
-                                    <option value="Confirmed" {% if booking.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
-                                    <option value="Cancelled" {% if booking.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                                </select>
-                                <button type="submit">Update</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="8">No bookings found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>  
-            <div class="pagination">
-                <span class="current">Page {{ bookings.number }} of {{ bookings.paginator.num_pages }}.</span>
-                {% if bookings.has_previous %}
-                    <a href="?page=1">First</a>
-                    <a href="?page={{ bookings.previous_page_number }}">Previous</a>
-                {% endif %}
-                {% if bookings.has_next %}
-                    <a href="?page={{ bookings.next_page_number }}">Next</a>
-                    <a href="?page={{ bookings.paginator.num_pages }}">Last</a>
-                {% endif %}
+        <div class="card-container">
+            {% for package in running_packages %}
+            <div class="card">
+                <a href="{% url 'package_requests' package.id %}">
+                    <img src="{{ package.packageimage_set.first.image.url }}" class="card-img-top" alt="{{ package.package_name }} Image">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ package.package_name }}</h5>
+                    <p class="card-text">{{ package.booking_deadline }} is the Last Date for Booking<br>{{ package.start_date }} is the Starting date.<br> {{ package.end_date }} is the end date.</p>
+                    <div class="star d-flex clearfix">
+                        <div class="mr-auto float-left">
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                            <span class="ion-ios-star"></span>
+                        </div>
+                        <!-- <div class="float-right">
+                            <span class="rate">{{ bookings.passenger_limit }} number of seats available. </span>
+                        </div> -->
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
-
+            {% endfor %}
+        </div>
+        
 </body>
 </html>
