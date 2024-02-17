@@ -80,10 +80,13 @@ urlpatterns = [
 
     path('custom_package/', views.custom_package, name='custom_package'),
     path('honeymoon_packages/', views.honeymoon_packages, name='honeymoon_packages'),
+    path('family_packages/', views.family_packages, name='family_packages'),
+    path('adventure_packages/', views.adventure_packages, name='adventure_packages'),
     path('custom_package/<int:package_id>/', views.custom_package_detail, name='custom_package_detail'),
     path('admin_custom_package/',views.admin_custom_package,name='admin_custom_package') ,
     path('view_custom_package/', views.view_custom_package, name='view_custom_package'),
     path('edit_custom_package/<int:package_id>/', views.edit_custom_package, name='edit_custom_package'),
+    path('add_custom_passenger/<int:package_id>/', views.add_custom_passenger, name='add_custom_passenger'),
 
 
 

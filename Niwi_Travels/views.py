@@ -1633,7 +1633,20 @@ def honeymoon_packages(request):
     return render(request, 'honeymoon_packages.html', {
         'honeymoon_packages': honeymoon_packages,
     })
+def family_packages(request):
+    # Assuming 'Honeymoon' is the category for honeymoon packages
+    family_packages = CustomPackage.objects.filter(category='Family')
 
+    return render(request, 'family_packages.html', {
+        'family_packages': family_packages,
+    })
+def adventure_packages(request):
+    # Assuming 'Honeymoon' is the category for honeymoon packages
+    adventure_packages = CustomPackage.objects.filter(category='Adventure')
+
+    return render(request, 'adventure_packages.html', {
+        'adventure_packages': adventure_packages,
+    })
 def custom_package_detail(request, package_id):
     package = get_object_or_404(CustomPackage, id=package_id)
     return render(request, 'custom_package_detail.html', {'package': package})
@@ -1642,10 +1655,28 @@ def custom_package_detail(request, package_id):
 def admin_custom_package(request):
     return render(request,'admin_custom_package.html')
 
-def view_custom_package(request):
+def view_custom_package(request,package_id):
+    package = get_object_or_404(CustomPackage, pk=package_id)
+    from_upcoming_journeys = request.GET.get('from_upcoming_journeys')
+    user= request.user
+    passenger = CustomPassenger.objects.filter(package=package, user=user).first()
+
+    if from_upcoming_journeys:
+        # If the 'from_upcoming_journeys' query parameter is present, hide the book button
+        return render(request, 'view_custom_package.html', {'package': package, 'from_upcoming_journeys': from_upcoming_journeys})
+
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'traveller'):
+            profile = request.user.traveller  # Get or create the Traveller model instance
+            return render(request, 'view_custom_package.html', {'profile': profile,'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
+        if request.user.is_traveller:
+            profile = request.user.is_traveller  # Corrected from 'is_traveller' to 'traveller'
+            return render(request, 'view_custom_package.html', {'profile': profile,'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
+    else:
+        return render(request, 'view_custom_package.html', {'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
     # Retrieve all travel packages
-    travel_packages = CustomPackage.objects.all()
-    return render(request, 'view_custom_package.html', {'travel_packages': travel_packages})
+    # travel_packages = CustomPackage.objects.all()
+    # return render(request, 'view_custom_package.html', {'travel_packages': travel_packages})
 
 
 from .forms import CustomPackageForm  # Import your form
@@ -1676,3 +1707,56 @@ def edit_custom_package(request, package_id):
     days = Day.objects.filter(custom_package=package)
 
     return render(request, 'edit_custom_package.html', {'form': form, 'package': package, 'days': days})
+
+
+@never_cache
+@login_required(login_url='log')
+def add_custom_passenger(request, package_id):
+    package = get_object_or_404(CustomPackage, id=package_id)
+    if request.method == 'POST':
+        user_id = request.user.id
+        package_id = package_id
+        passenger_limit = request.POST.get('passenger-limit')
+        passenger_name_list = request.POST.getlist('passenger_name')
+        passenger_age_list = request.POST.getlist('passenger_age')
+        proof_of_id_list = request.FILES.getlist('proof_of_id')
+        children=request.POST.get('children')
+        print(passenger_name_list,passenger_limit)
+            
+            # Check if the number of entries in all lists match
+        if len(passenger_name_list) == len(passenger_age_list) == len(proof_of_id_list):
+            total_passengers = len(passenger_name_list)
+
+            for i in range(total_passengers):
+                passenger_name = passenger_name_list[i]
+                passenger_age = passenger_age_list[i]
+                proof_of_id = proof_of_id_list[i]
+
+                passenger = CustomPassenger(
+                    user_id=user_id,
+                    package_id=package_id,
+                    passenger_name=passenger_name,
+                    passenger_age=passenger_age,
+                    proof_of_id=proof_of_id
+                )
+                passenger.save()
+
+                               # Update availability
+                package.availability -= total_passengers
+                package.save()
+                booking = CustomBooking(
+                package_id=package_id,
+                user_id=user_id,
+                status='Pending' , # Set the status to 'Confirmed' or 'Pending' as needed
+                passenger_limit=passenger_limit,
+                children=children
+                )
+                booking.save()
+                messages.success(request, "Your Booking Procedures have been Initialized. Stay Connected for getting further Updates.")
+
+                return redirect('/thome')
+
+        else:
+            # Handle the case where the number of entries in lists don't match
+            messages.success(request, "Upload ID Proof of Number of Passengers Entered for Booking.")
+    return render(request, 'add_custom_passenger.html', {'package':package,'package_id': package_id})

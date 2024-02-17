@@ -134,6 +134,8 @@ class Passenger(models.Model):
     status = models.CharField(max_length=20, default='Pending')  # Assuming 'Pending' is the default status
     def __str__(self):
         return self.passenger_name
+    
+
 
 @receiver(post_save, sender=Booking)
 def update_passengers_on_booking_update(sender, instance, **kwargs):
@@ -201,3 +203,42 @@ class CustomPackage(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+from django.utils import timezone
+class CustomBooking(models.Model):
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+        ('Cancelled', 'Cancelled'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    package = models.ForeignKey(CustomPackage, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    boarding= models.DateField(default=timezone.now().date()) #+14days from now
+    start_date = models.DateTimeField(auto_now_add=True)
+    passenger_limit = models.IntegerField(default=0)  # Adjust default value as needed
+    children=models.IntegerField(default=0)
+    
+    # Fields related to payment
+    # total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    # payment_method = models.CharField(max_length=50)
+    # payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='Pending')
+    # payment_date = models.DateTimeField(blank=True, null=True)
+    
+    # Add other common fields for your Booking model
+
+    def __str__(self):
+        return f'Booking ID: {self.id}, User: {self.user}, Package: {self.package}, Status: {self.status}'
+
+class CustomPassenger(models.Model):
+    passenger_name = models.CharField(max_length=100)
+    passenger_age = models.PositiveIntegerField()
+    proof_of_id = models.FileField(upload_to='passenger_ids/')
+    package = models.ForeignKey(TravelPackage, on_delete=models.CASCADE)  # Assuming TravelPackage is your package model
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Associate each passenger with a user
+    status = models.CharField(max_length=20, default='Pending')  # Assuming 'Pending' is the default status
+    def __str__(self):
+        return self.passenger_name
