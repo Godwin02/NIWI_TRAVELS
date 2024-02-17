@@ -142,6 +142,41 @@
     font-weight: bold;
     color: #28a745; /* Green color, you can change it as needed */
   }
+  form {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin: 0 auto; /* Center the button horizontally */
+        display: block; /* Ensure the margin property works as expected */
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    a {
+        display: block;
+        margin-top: 20px;
+        text-align: center;
+        color: #007BFF;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
     </style>
     </head>
     <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
@@ -210,8 +245,24 @@
       {% endfor %}
     </div>
   </div>
-{% endif %}
-    </div>
+  {% endif %}
+  <form method="POST" action="{% url 'add_custom_passenger' package.id %}">
+    <input type="hidden" name="package.id" value="{{ package.id }}">
+    {% csrf_token %}
+    {% if user.is_authenticated %}
+    {% if not passenger %}
+    {% if not from_upcoming_journeys %}
+    <button type="submit">Book Now</button>
+    {% endif %}
+    {% endif %}
+    {% else %}
+    <a href="/log">Click Here to Login and Book Your Destination Soon.</a>
+    {% endif %}
+</form>
+</div>
+</div>
+
+    <!-- <iframe src="https://www.google.com/maps/d/embed?mid=1s-OpCZ7rIU12rcb8JOEe-xiDQz4lBCE&ehbc=2E312F" width="640" height="480"></iframe> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
