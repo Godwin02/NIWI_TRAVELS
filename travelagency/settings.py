@@ -144,7 +144,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'godwinbmenachery2024a@mca.ajce.in'  
-EMAIL_HOST_PASSWORD = 'Godwin@02'
+EMAIL_HOST_PASSWORD = 'qjeh bmqi ijxt ywha'
 
 TOKEN_EXPIRATION_DAYS = 3
 
