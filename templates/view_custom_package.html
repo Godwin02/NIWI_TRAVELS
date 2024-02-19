@@ -157,40 +157,41 @@
         <h1>Welcome Admin</h1>
         <p>This is where you can manage users, packages, and ongoing trips.</p>
     </div>
-        <div class="main-content">
-            <h2>View Travel Packages</h2>
-            {% if categorized_packages %}
-                {% for category, packages in categorized_packages.items %}
-                    <h3>{{ category }}</h3>
-                    {% if packages %}
-                        <table>
-                            <thead>
+    <div class="main-content">
+        <h2>View Travel Packages</h2>
+        {% if categorized_packages %}
+            {% for category, packages in categorized_packages.items %}
+                <h3>{{ category }}</h3>
+                {% if packages %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Package ID</th>
+                                <th>Name</th>
+                                <th>Days</th>
+                                <th>Nights</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for package in packages %}
                                 <tr>
-                                    <th>Package ID</th>
-                                    <th>Name</th>
-                                    <th>Days</th>
-                                    <th>Nights</th>
-                                    <th>Price</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <td>{{ package.id }}</td>
+                                    <td>{{ package.name }}</td>
+                                    <td>{{ package.days }}</td>
+                                    <td>{{ package.nights }}</td>
+                                    <td>{{ package.price }}</td>
+                                    <td>{{ package.status }}</td>
+                                    <td>
+                                        <a href="{% url 'edit_custom_package' package.id %}">Edit</a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for package in packages %}
-                                    <tr>
-                                        <td>{{ package.id }}</td>
-                                        <td>{{ package.name }}</td>
-                                        <td>{{ package.days }}</td>
-                                        <td>{{ package.nights }}</td>
-                                        <td>{{ package.price }}</td>
-                                        <td>{{ package.status }}</td>
-                                        <td>
-                                            <a href="{% url 'edit_custom_package' package.id %}">Edit</a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if packages.has_other_pages %}
                         <div class="pagination">
                             <span class="step-links">
                                 {% if packages.has_previous %}
@@ -208,14 +209,14 @@
                                 {% endif %}
                             </span>
                         </div>
-                    {% else %}
-                        <p>No travel packages available in this category.</p>
                     {% endif %}
-                {% endfor %}
-            {% else %}
-                <p>No travel packages available.</p>
-            {% endif %}
-        </div>
-    </body>
-    </html>
-    
+                {% else %}
+                    <p>No travel packages available in this category.</p>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <p>No travel packages available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
