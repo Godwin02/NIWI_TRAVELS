@@ -1597,6 +1597,7 @@ def custom_package(request):
         nights = request.POST.get('nights')
         price = request.POST.get('price')
         package_image = request.FILES.get('package_image')
+        status=request.POST.get("status")
 
         # Create and save the CustomPackage object
         custom_package = CustomPackage.objects.create(
@@ -1606,6 +1607,7 @@ def custom_package(request):
             days=days,
             nights=nights,
             price=price,
+            status=status,
             package_image=package_image
         )
 
@@ -1659,13 +1661,30 @@ def view_custom_package(request):
     # Fetch distinct categories
     categories = CustomPackage.objects.values_list('category', flat=True).distinct()
 
-    # Create a dictionary to store packages for each category
+    # Create a dictionary to store paginated packages for each category
     categorized_packages = {}
 
-    # Fetch packages for each category
+    # Number of items to display per page
+    items_per_page = 10  # You can adjust this as needed
+
+    # Fetch and paginate packages for each category
     for category in categories:
         packages = CustomPackage.objects.filter(category=category)
-        categorized_packages[category] = packages
+        paginator = Paginator(packages, items_per_page)
+
+        # Get the current page number from the request
+        page = request.GET.get('page')
+
+        try:
+            paginated_packages = paginator.page(page)
+        except PageNotAnInteger:
+            # If the page parameter is not an integer, show the first page
+            paginated_packages = paginator.page(1)
+        except EmptyPage:
+            # If the page is out of range, show the last page
+            paginated_packages = paginator.page(paginator.num_pages)
+
+        categorized_packages[category] = paginated_packages
 
     context = {
         'categorized_packages': categorized_packages,
@@ -1755,3 +1774,20 @@ def add_custom_passenger(request, package_id):
             # Handle the case where the number of entries in lists don't match
             messages.success(request, "Upload ID Proof of Number of Passengers Entered for Booking.")
     return render(request, 'add_custom_passenger.html', {'package':package,'package_id': package_id})
+
+
+def upcoming_custom_bookings(request):
+    current_date = timezone.now().date()
+
+    # Get the distinct categories
+    categories = CustomPackage.objects.values_list('category', flat=True).distinct()
+
+    # Create a dictionary to store packages for each category
+    categorized_packages = {}
+
+    # Fetch packages for each category
+    for category in categories:
+        packages = CustomPackage.objects.filter(Q(category=category) & Q(status='Post'))
+        categorized_packages[category] = packages
+
+    return render(request, 'upcoming_custom_bookings.html', {'categorized_packages': categorized_packages})

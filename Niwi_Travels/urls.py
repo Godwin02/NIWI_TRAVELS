@@ -87,7 +87,7 @@ urlpatterns = [
     path('view_custom_package/', views.view_custom_package, name='view_custom_package'),
     path('edit_custom_package/<int:package_id>/', views.edit_custom_package, name='edit_custom_package'),
     path('add_custom_passenger/<int:package_id>/', views.add_custom_passenger, name='add_custom_passenger'),
-
+    path('upcoming_custom_bookings/',views.upcoming_custom_bookings, name='upcoming_custom_bookings'),
 
 
 
