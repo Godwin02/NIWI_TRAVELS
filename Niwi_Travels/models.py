@@ -191,7 +191,10 @@ class CustomPackage(models.Model):
         ('Adventure', 'Adventure'),
         ('Family', 'Family'),
     ]
-
+    STATUS_CHOICES = [
+        ('Post', 'Post'),
+        ('Save', 'Save'),
+    ]
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -199,6 +202,7 @@ class CustomPackage(models.Model):
     nights = models.PositiveIntegerField()
     package_image = models.ImageField(upload_to='custom_package_images/', null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2,null=True)  # Add this line for the price field
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Save')  # Add the new field
 
 
     def __str__(self):

@@ -1628,21 +1628,21 @@ def custom_package(request):
 
 def honeymoon_packages(request):
     # Assuming 'Honeymoon' is the category for honeymoon packages
-    honeymoon_packages = CustomPackage.objects.filter(category='Honeymoon')
+    honeymoon_packages = CustomPackage.objects.filter(category='Honeymoon',status='Post')
 
     return render(request, 'honeymoon_packages.html', {
         'honeymoon_packages': honeymoon_packages,
     })
 def family_packages(request):
     # Assuming 'Honeymoon' is the category for honeymoon packages
-    family_packages = CustomPackage.objects.filter(category='Family')
+    family_packages = CustomPackage.objects.filter(category='Family',status='Post')
 
     return render(request, 'family_packages.html', {
         'family_packages': family_packages,
     })
 def adventure_packages(request):
     # Assuming 'Honeymoon' is the category for honeymoon packages
-    adventure_packages = CustomPackage.objects.filter(category='Adventure')
+    adventure_packages = CustomPackage.objects.filter(category='Adventure',status='Post')
 
     return render(request, 'adventure_packages.html', {
         'adventure_packages': adventure_packages,
@@ -1655,28 +1655,23 @@ def custom_package_detail(request, package_id):
 def admin_custom_package(request):
     return render(request,'admin_custom_package.html')
 
-def view_custom_package(request,package_id):
-    package = get_object_or_404(CustomPackage, pk=package_id)
-    from_upcoming_journeys = request.GET.get('from_upcoming_journeys')
-    user= request.user
-    passenger = CustomPassenger.objects.filter(package=package, user=user).first()
+def view_custom_package(request):
+    # Fetch distinct categories
+    categories = CustomPackage.objects.values_list('category', flat=True).distinct()
 
-    if from_upcoming_journeys:
-        # If the 'from_upcoming_journeys' query parameter is present, hide the book button
-        return render(request, 'view_custom_package.html', {'package': package, 'from_upcoming_journeys': from_upcoming_journeys})
+    # Create a dictionary to store packages for each category
+    categorized_packages = {}
 
-    if request.user.is_authenticated:
-        if hasattr(request.user, 'traveller'):
-            profile = request.user.traveller  # Get or create the Traveller model instance
-            return render(request, 'view_custom_package.html', {'profile': profile,'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
-        if request.user.is_traveller:
-            profile = request.user.is_traveller  # Corrected from 'is_traveller' to 'traveller'
-            return render(request, 'view_custom_package.html', {'profile': profile,'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
-    else:
-        return render(request, 'view_custom_package.html', {'package': package,'from_upcoming_journeys': from_upcoming_journeys,'passenger':passenger})
-    # Retrieve all travel packages
-    # travel_packages = CustomPackage.objects.all()
-    # return render(request, 'view_custom_package.html', {'travel_packages': travel_packages})
+    # Fetch packages for each category
+    for category in categories:
+        packages = CustomPackage.objects.filter(category=category)
+        categorized_packages[category] = packages
+
+    context = {
+        'categorized_packages': categorized_packages,
+    }
+
+    return render(request, 'view_custom_package.html', context)
 
 
 from .forms import CustomPackageForm  # Import your form

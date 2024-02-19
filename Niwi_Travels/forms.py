@@ -53,7 +53,7 @@ DayFormSet = inlineformset_factory(CustomPackage, Day, form=DayForm, extra=1)
 class CustomPackageForm(forms.ModelForm):
     class Meta:
         model = CustomPackage
-        fields = ['category', 'name', 'description', 'days', 'nights', 'price', 'package_image']
+        fields = ['category', 'name', 'description', 'days', 'nights', 'price', 'package_image','status']
 
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
