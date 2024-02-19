@@ -248,6 +248,13 @@ input[type="submit"] {
                     <label for="id_new_package_image">Change Package Image:</label>
                     <input type="file" name="new_package_image" id="id_new_package_image" accept="image/*">
                 </div>
+                <div class="form-group">
+                    <label for="id_status">Status:</label>
+                    <select name="status" id="id_status">
+                        <option value="Post" {% if package.status == 'Post' %}selected{% endif %}>Post</option>
+                        <option value="Save" {% if package.status == 'Save' %}selected{% endif %}>Save</option>
+                    </select>
+                </div>
                 
                 
             </div>
@@ -259,14 +266,15 @@ input[type="submit"] {
                     <p>Days variable is not empty.</p>
                     {% for day in days %}
                         <div class="formset-form">
-                            <p>Debug: Day {{ day.day_number }} - {{ day.image_description }}</p>
                             <div class="form-group">
                                 <label for="day_image_{{ day.day_number }}">Day {{ day.day_number }} Image:</label>
                                 <input type="file" name="day_image_{{ day.day_number }}" id="day_image_{{ day.day_number }}" accept="image/*">
                             </div>
                             <div class="form-group">
                                 <label for="day_image_description_{{ day.day_number }}">Day {{ day.day_number }} Image Description:</label>
-                                <textarea name="day_image_description_{{ day.day_number }}" id="day_image_description_{{ day.day_number }}" required>{{ day.image_description }}</textarea>
+                                <textarea name="day_image_description_{{ day.day_number }}" id="day_image_description_{{ day.day_number }}" required>
+                                    {{ day.image_description }}
+                                </textarea>
                             </div>
                         </div>
                     {% endfor %}

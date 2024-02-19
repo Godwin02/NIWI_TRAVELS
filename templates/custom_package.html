@@ -247,6 +247,15 @@ input[type="submit"] {
                     <label for="id_package_image">Package Image:</label>
                     <input type="file" name="package_image" id="id_package_image" accept="image/*">
                 </div>
+                <div class="form-group">
+                    <label for="id_status">Status:</label>
+                    <select name="status" id="id_status">
+                        <option value="" selected disabled>Select a status</option>
+                        <option value="Post">Post</option>
+                        <option value="Save">Save</option>
+                    </select>
+                    <div id="id_status-alert" class="alert alert-danger"></div>
+                </div>
             </div>
     
             <!-- Days Information -->
@@ -264,6 +273,7 @@ input[type="submit"] {
                 </div>
                 <!-- Add more day information fields as needed -->
             </div>
+
     
             <input type="submit" value="Create Package">
         </form>
@@ -313,7 +323,8 @@ input[type="submit"] {
             var nightsInput = document.getElementById('id_nights');
             var priceInput = document.getElementById('id_price');
             var categorySelect = document.getElementById('id_category');
-    
+            var statusSelect = document.getElementById('id_status');
+
             form.addEventListener('submit', function (event) {
                 if (!validateForm()) {
                     event.preventDefault();
@@ -327,7 +338,8 @@ input[type="submit"] {
             nightsInput.addEventListener('input', validateNights);
             priceInput.addEventListener('input', validatePrice);
             categorySelect.addEventListener('change', validateCategory);
-    
+            statusSelect.addEventListener('change', validateStatus);
+
             function validateForm() {
                 var isValid = true;
     
@@ -348,7 +360,9 @@ input[type="submit"] {
     
                 // Example: Validate category
                 isValid = isValid && validateCategory();
-    
+                
+                isValid = isValid && validateStatus();
+
                 return isValid;
             }
     
@@ -417,7 +431,21 @@ input[type="submit"] {
                     return true;
                 }
             }
-    
+            function validateStatus() {
+                    var selectedStatus = statusSelect.options[statusSelect.selectedIndex].value;
+                    var alertElement = document.getElementById('id_status-alert');
+
+                    if (selectedStatus === '') {
+                        alertElement.textContent = 'Please select a status';
+                        statusSelect.classList.add('is-invalid');
+                        return false;
+                    } else {
+                        alertElement.textContent = '';
+                        statusSelect.classList.remove('is-invalid');
+                        return true;
+                    }
+                }
+                
             function showAlert(inputElement, message) {
                 var alertId = inputElement.id + '-alert';
                 var alertElement = document.getElementById(alertId);
