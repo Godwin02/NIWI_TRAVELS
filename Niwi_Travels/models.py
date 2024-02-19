@@ -229,16 +229,62 @@ class CustomBooking(models.Model):
         ('Cancelled', 'Cancelled'),
     ]
 
+    BOARDING_CHOICES = [
+        ('Trivandrum_Central', 'Trivandrum Central'),
+        ('Kazhakuttam', 'Kazhakuttam'),
+        ('Neyyattinkara', 'Neyyattinkara'),
+        ('Ernakulam', 'Ernakulam Junction'),
+        ('Kochi_Central', 'Kochi Airport'),
+        ('Aluva', 'Aluva Railway Station'),
+        ('Kakkanad', 'Kakkanad'),
+        ('Kozhikode_Central', 'Kozhikode Central'),
+        ('Calicut_Airport', 'Calicut Airport'),
+        ('Vadakara', 'Vadakara'),
+        ('Kannur_Central', 'Kannur Airport'),
+        ('Thalassery', 'Thalassery'),
+        ('Payyannur', 'Payyannur'),
+        ('Kollam_Central', 'Kollam Central'),
+        ('Karunagappally', 'Karunagappally'),
+        ('Punalur', 'Punalur'),
+        ('Palakkad_Central', 'Palakkad Central'),
+        ('Ottapalam', 'Ottapalam'),
+        ('Chittur', 'Chittur'),
+        ('Thrissur_Central', 'Thrissur Central'),
+        ('Kodungallur', 'Kodungallur'),
+        ('Chalakudy', 'Chalakudy'),
+        ('Alappuzha_Central', 'Alappuzha Central'),
+        ('Ambalappuzha', 'Ambalappuzha'),
+        ('Cherthala', 'Cherthala'),
+        ('Kottayam_Central', 'Kottayam Central'),
+        ('Changanassery', 'Changanassery'),
+        ('Vaikom', 'Vaikom'),
+        ('Pathanamthitta_Central', 'Pathanamthitta Central'),
+        ('Adoor', 'Adoor'),
+        ('Thiruvalla', 'Thiruvalla'),
+        ('Malappuram_Central', 'Malappuram Central'),
+        ('Manjeri', 'Manjeri'),
+        ('Perinthalmanna', 'Perinthalmanna'),
+        ('Idukki_Central', 'Idukki Central'),
+        ('Thodupuzha', 'Thodupuzha'),
+        ('Munnar', 'Munnar'),
+        ('Kasaragod_Central', 'Kasaragod Central'),
+        ('Kanhangad', 'Kanhangad'),
+        ('Kasaragod_Town', 'Kasaragod Town'),
+        ('Wayanad_Central', 'Wayanad Central'),
+        ('Kalpetta', 'Kalpetta'),
+        ('Mananthavady', 'Mananthavady'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    package = models.ForeignKey(CustomPackage, on_delete=models.CASCADE)
+    package = models.ForeignKey('CustomPackage', on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-    boarding = models.DateField(default=timezone.now().date() + timezone.timedelta(days=14))  # +14 days from now
+    boarding = models.CharField(max_length=50, choices=BOARDING_CHOICES)
     start_date = models.DateTimeField(auto_now_add=True, validators=[validate_start_date])
     passenger_limit = models.IntegerField(default=0, validators=[MinValueValidator(1)])
     children = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'Booking ID: {self.id}, User: {self.user}, Package: {self.package}, Status: {self.status}'
+        return f'Booking ID: {self.id}, User: {self.user}, Package: {self.package}, Status: {self.status}, Boarding: {self.boarding}'
 
 class CustomPassenger(models.Model):
     passenger_name = models.CharField(max_length=100)

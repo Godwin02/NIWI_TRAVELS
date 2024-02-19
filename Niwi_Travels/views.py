@@ -1791,3 +1791,25 @@ def upcoming_custom_bookings(request):
         categorized_packages[category] = packages
 
     return render(request, 'upcoming_custom_bookings.html', {'categorized_packages': categorized_packages})
+
+
+def custom_package_requests(request, package_id):
+    # Get the selected package
+    selected_package = get_object_or_404(CustomPackage, id=package_id)
+
+    # Get the pending bookings for the selected package
+    pending_bookings = CustomBooking.objects.filter(package=selected_package, status='Pending')
+
+    # Retrieve user details for pending bookings
+    user_details = []
+    for booking in pending_bookings:
+        user_details.append({
+            'booking_id': booking.id,
+            'user': booking.user,
+            'boarding': booking.boarding,
+            'start_date': booking.start_date,
+            'passenger_limit': booking.passenger_limit,
+            'children': booking.children,
+        })
+
+    return render(request, 'custom_package_requests.html', {'selected_package': selected_package, 'user_details': user_details})

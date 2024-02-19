@@ -88,6 +88,8 @@ urlpatterns = [
     path('edit_custom_package/<int:package_id>/', views.edit_custom_package, name='edit_custom_package'),
     path('add_custom_passenger/<int:package_id>/', views.add_custom_passenger, name='add_custom_passenger'),
     path('upcoming_custom_bookings/',views.upcoming_custom_bookings, name='upcoming_custom_bookings'),
+    path('custom_package_requests/<int:package_id>/', views.custom_package_requests, name='custom_package_requests'),
+
 
 
 
