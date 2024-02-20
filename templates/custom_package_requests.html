@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Package Requests</title>
+</head>
+<body>
+
+<h2>Custom Package Requests for {{ selected_package.name }}</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>User</th>
+            <th>Boarding</th>
+            <th>Start Date</th>
+            <th>Passenger Limit</th>
+            <th>Children</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user_detail in user_details %}
+            <tr>
+                <td>{{ user_detail.booking_id }}</td>
+                <td>{{ user_detail.user }}</td>
+                <td>{{ user_detail.boarding }}</td>
+                <td>{{ user_detail.start_date }}</td>
+                <td>{{ user_detail.passenger_limit }}</td>
+                <td>{{ user_detail.children }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

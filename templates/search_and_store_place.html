@@ -162,9 +162,9 @@ option {
         <div>
             <label for="starting-date">Starting Date:</label>
             <input type="date" name="starting_date" id="starting-date">
-            <span class="error-message" id="starting-date-error"></span>
         </div>
-    <input type="text" id="searchInput" name="boarding_point" placeholder="Search for your boarding point">
+    <h2>Search and Store Place</h2>
+    <input type="text" id="searchInput" name="boarding_point" placeholder="Search for a place">
      <script>
         $(function () {
             $("#searchInput").autocomplete({
@@ -183,7 +183,7 @@ option {
                 minLength: 2,
             });
         });
-    </script><br>
+    </script>
      <div>
         <input type="text" name="passenger_name" id="passenger_name" placeholder="Passenger Name">
         <span class="error-message" id="passenger-name-error"></span>
@@ -505,13 +505,6 @@ Please note that the above terms and conditions are a general example and may ne
                     }
                 }
                 // If no errors are found, the form will be submitted
-                const startingDateError = document.getElementById("starting-date-error");
-                    if (startingDateError.textContent) {
-                        alert("Please fix the errors in the form.");
-                        return false; // Prevent form submission
-                    }
-
-                    
                 return true;
             }
         </script>
@@ -533,26 +526,7 @@ Please note that the above terms and conditions are a general example and may ne
                 }
             });
         </script>
-<script>
-    // Real-time validation for the starting date
-    const startingDateInput = document.getElementById("starting-date");
-    const startingDateError = document.getElementById("starting-date-error");
 
-    startingDateInput.addEventListener("input", function() {
-        const selectedDate = new Date(startingDateInput.value);
-        const currentDate = new Date();
-        const minDate = new Date(currentDate.getTime() + 10 * 24 * 60 * 60 * 1000); // 10 days later
-        const maxDate = new Date(currentDate.getTime() + 6 * 30 * 24 * 60 * 60 * 1000); // 6 months later
-
-        if (selectedDate < minDate) {
-            startingDateError.textContent = 'Starting date must be at least 10 days from today.';
-        } else if (selectedDate > maxDate) {
-            startingDateError.textContent = 'Starting date must be within the next 6 months.';
-        } else {
-            startingDateError.textContent = '';
-        }
-    });
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

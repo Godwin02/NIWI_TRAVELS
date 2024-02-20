@@ -187,7 +187,7 @@ tr:hover {
             <div class="card-container">
                 {% for package in packages %}
                     <div class="card">
-                        <a href="{% url 'package_details' package_id=package.id %}">
+                        <a href="{% url 'custom_package_requests' package_id=package.id %}">
                         <img src="{{ package.package_image.url }}" class="card-img-top" alt="{{ package.name }} Image">
                         </a>
                         <div class="card-body">
