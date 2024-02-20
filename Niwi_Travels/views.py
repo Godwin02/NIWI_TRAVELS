@@ -1730,6 +1730,8 @@ def add_custom_passenger(request, package_id):
     if request.method == 'POST':
         user_id = request.user.id
         package_id = package_id
+        boarding = request.POST.get('boarding_point')
+        starting_date = request.POST.get('starting_date')
         passenger_limit = request.POST.get('passenger-limit')
         passenger_name_list = request.POST.getlist('passenger_name')
         passenger_age_list = request.POST.getlist('passenger_age')
@@ -1755,15 +1757,14 @@ def add_custom_passenger(request, package_id):
                 )
                 passenger.save()
 
-                               # Update availability
-                package.availability -= total_passengers
-                package.save()
                 booking = CustomBooking(
                 package_id=package_id,
                 user_id=user_id,
                 status='Pending' , # Set the status to 'Confirmed' or 'Pending' as needed
                 passenger_limit=passenger_limit,
-                children=children
+                children=children,
+                boarding=boarding,
+                start_date=starting_date,
                 )
                 booking.save()
                 messages.success(request, "Your Booking Procedures have been Initialized. Stay Connected for getting further Updates.")
@@ -1813,3 +1814,37 @@ def custom_package_requests(request, package_id):
         })
 
     return render(request, 'custom_package_requests.html', {'selected_package': selected_package, 'user_details': user_details})
+
+
+
+
+
+
+from .forms import SearchForm
+from .models import Place
+import requests
+
+def search_and_store_place(request):
+    return render(request, 'search_and_store_place.html')
+
+
+def get_place_suggestions(request):
+    term = request.GET.get('term', '')
+
+    if term:
+        endpoint = 'https://nominatim.openstreetmap.org/search'
+        
+        params = {
+            'q': term,
+            'format': 'json',
+            'limit': 10,
+        }
+
+        response = requests.get(endpoint, params=params)
+        data = response.json()
+
+        suggestions = [{'value': place['display_name']} for place in data]
+    else:
+        suggestions = []
+
+    return JsonResponse(suggestions, safe=False)

@@ -209,18 +209,6 @@ class CustomPackage(models.Model):
         return self.name
 
 
-from django.core.exceptions import ValidationError
-
-def validate_start_date(value):
-    # Ensure start_date is at least 10 days from the current date
-    min_date = timezone.now().date() + timezone.timedelta(days=10)
-    if value < min_date:
-        raise ValidationError("Start date must be at least 10 days from the current date.")
-
-    # Ensure start_date is less than 6 months from the current date
-    max_date = timezone.now().date() + timezone.timedelta(days=6*30)
-    if value > max_date:
-        raise ValidationError("Start date must be less than 6 months from the current date.")
 
 class CustomBooking(models.Model):
     STATUS_CHOICES = [
@@ -229,58 +217,12 @@ class CustomBooking(models.Model):
         ('Cancelled', 'Cancelled'),
     ]
 
-    BOARDING_CHOICES = [
-        ('Trivandrum_Central', 'Trivandrum Central'),
-        ('Kazhakuttam', 'Kazhakuttam'),
-        ('Neyyattinkara', 'Neyyattinkara'),
-        ('Ernakulam', 'Ernakulam Junction'),
-        ('Kochi_Central', 'Kochi Airport'),
-        ('Aluva', 'Aluva Railway Station'),
-        ('Kakkanad', 'Kakkanad'),
-        ('Kozhikode_Central', 'Kozhikode Central'),
-        ('Calicut_Airport', 'Calicut Airport'),
-        ('Vadakara', 'Vadakara'),
-        ('Kannur_Central', 'Kannur Airport'),
-        ('Thalassery', 'Thalassery'),
-        ('Payyannur', 'Payyannur'),
-        ('Kollam_Central', 'Kollam Central'),
-        ('Karunagappally', 'Karunagappally'),
-        ('Punalur', 'Punalur'),
-        ('Palakkad_Central', 'Palakkad Central'),
-        ('Ottapalam', 'Ottapalam'),
-        ('Chittur', 'Chittur'),
-        ('Thrissur_Central', 'Thrissur Central'),
-        ('Kodungallur', 'Kodungallur'),
-        ('Chalakudy', 'Chalakudy'),
-        ('Alappuzha_Central', 'Alappuzha Central'),
-        ('Ambalappuzha', 'Ambalappuzha'),
-        ('Cherthala', 'Cherthala'),
-        ('Kottayam_Central', 'Kottayam Central'),
-        ('Changanassery', 'Changanassery'),
-        ('Vaikom', 'Vaikom'),
-        ('Pathanamthitta_Central', 'Pathanamthitta Central'),
-        ('Adoor', 'Adoor'),
-        ('Thiruvalla', 'Thiruvalla'),
-        ('Malappuram_Central', 'Malappuram Central'),
-        ('Manjeri', 'Manjeri'),
-        ('Perinthalmanna', 'Perinthalmanna'),
-        ('Idukki_Central', 'Idukki Central'),
-        ('Thodupuzha', 'Thodupuzha'),
-        ('Munnar', 'Munnar'),
-        ('Kasaragod_Central', 'Kasaragod Central'),
-        ('Kanhangad', 'Kanhangad'),
-        ('Kasaragod_Town', 'Kasaragod Town'),
-        ('Wayanad_Central', 'Wayanad Central'),
-        ('Kalpetta', 'Kalpetta'),
-        ('Mananthavady', 'Mananthavady'),
-    ]
-
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     package = models.ForeignKey('CustomPackage', on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-    boarding = models.CharField(max_length=50, choices=BOARDING_CHOICES)
-    start_date = models.DateTimeField(auto_now_add=True, validators=[validate_start_date])
-    passenger_limit = models.IntegerField(default=0, validators=[MinValueValidator(1)])
+    boarding = models.CharField(max_length=50)
+    start_date = models.DateField()
+    passenger_limit = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     children = models.IntegerField(default=0)
 
     def __str__(self):
@@ -296,3 +238,15 @@ class CustomPassenger(models.Model):
 
     def __str__(self):
         return self.passenger_name
+    
+
+# models.py
+from django.db import models
+
+class Place(models.Model):
+    name = models.CharField(max_length=255)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __str__(self):
+        return self.name

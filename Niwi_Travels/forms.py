@@ -59,3 +59,12 @@ class CustomPackageForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 4}),
         }
 
+# forms.py
+
+
+# forms.py
+from django import forms
+
+class SearchForm(forms.Form):
+    search_query = forms.CharField(label='Search for a place', max_length=100, widget=forms.TextInput(attrs={'id': 'autocomplete-input'}))
+

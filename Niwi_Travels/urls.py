@@ -90,6 +90,8 @@ urlpatterns = [
     path('upcoming_custom_bookings/',views.upcoming_custom_bookings, name='upcoming_custom_bookings'),
     path('custom_package_requests/<int:package_id>/', views.custom_package_requests, name='custom_package_requests'),
 
+    path('search/', views.search_and_store_place, name='search_and_store_place'),
+    path('get_place_suggestions/', views.get_place_suggestions, name='get_place_suggestions'),
 
 
 
