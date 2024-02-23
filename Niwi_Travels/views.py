@@ -1811,6 +1811,8 @@ def custom_package_requests(request, package_id):
             'start_date': booking.start_date,
             'passenger_limit': booking.passenger_limit,
             'children': booking.children,
+            'package_id':package_id,
+            'status': booking.status,
         })
 
     return render(request, 'custom_package_requests.html', {'selected_package': selected_package, 'user_details': user_details})
@@ -1848,3 +1850,42 @@ def get_place_suggestions(request):
         suggestions = []
 
     return JsonResponse(suggestions, safe=False)
+
+def update_custom_booking_status(request, user_id, package_id):
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        package = CustomPackage.objects.get(pk=package_id)
+
+        if status == 'Pending':
+            subject = f'Booking Status Update for Booking ID {package.name}'
+            message = f'Your booking status has been updated to: Pending'
+        elif status == 'Confirmed':
+            subject = f'Booking Status Update for Booking ID {package.name}'
+            login_url = request.build_absolute_uri(reverse('upcoming_journeys'))  # Adjust the URL name if needed
+            message = f"Your booking status has been Confirmed. Now you can Login to NIWI TRAVELS and make the payment. Click here to '{login_url}'"
+        elif status == 'Cancelled':
+            subject = f'Booking Status Update for Booking ID {package.name}'
+            login_url = request.build_absolute_uri(reverse('log'))  # Adjust the URL name if needed
+            message = f"Your booking status has been Cancelled due to the incorrect entry of information of the Passengers. Login to NIWI TRAVELS and reenter the data again. We are happy to help you. Click here to login '{login_url}'"
+        else:
+            # Handle an invalid status here (if needed)
+            return render(request, 'invalid_status.html')  # Create this template
+
+        # Use get() instead of filter() to get a single Booking instance
+        booking = CustomBooking.objects.filter(user_id=user_id, package_id=package_id).first()
+
+        if booking:
+            # Update the booking status
+            booking.status = status
+            booking.save()
+
+            # Send an email notification
+            from_email = 'godwinbmenachery2024a@mca.ajce.in'  # Replace with your email
+            recipient_list = [booking.user.email]  # Use the email of the booking user
+
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+            return redirect(upcoming_bookings)
+        else:
+            # Handle the case where there is no matching booking
+            return render(request, 'booking_not_found.html')  # Create this template
