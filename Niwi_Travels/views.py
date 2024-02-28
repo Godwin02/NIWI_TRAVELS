@@ -1792,6 +1792,21 @@ def upcoming_custom_bookings(request):
         categorized_packages[category] = packages
 
     return render(request, 'upcoming_custom_bookings.html', {'categorized_packages': categorized_packages})
+def verified_custom_bookings(request):
+    current_date = timezone.now().date()
+
+    # Get the distinct categories
+    categories = CustomPackage.objects.values_list('category', flat=True).distinct()
+
+    # Create a dictionary to store packages for each category
+    categorized_packages = {}
+
+    # Fetch packages for each category
+    for category in categories:
+        packages = CustomPackage.objects.filter(Q(category=category) & Q(status='Post'))
+        categorized_packages[category] = packages
+
+    return render(request, 'verified_custom_bookings.html', {'categorized_packages': categorized_packages})
 
 
 def custom_package_requests(request, package_id):
