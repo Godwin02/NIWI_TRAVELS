@@ -218,7 +218,7 @@ class CustomBooking(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    package = models.ForeignKey('CustomPackage', on_delete=models.CASCADE)
+    package = models.ForeignKey('CustomPackage', on_delete=models.CASCADE, related_name='custom_bookings')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     boarding = models.CharField(max_length=50)
     start_date = models.DateField()
@@ -232,7 +232,7 @@ class CustomPassenger(models.Model):
     passenger_name = models.CharField(max_length=100)
     passenger_age = models.PositiveIntegerField()
     proof_of_id = models.FileField(upload_to='passenger_ids/')
-    package = models.ForeignKey(CustomPackage, on_delete=models.CASCADE)  # Assuming CustomPackage is your package model
+    package = models.ForeignKey(CustomPackage, on_delete=models.CASCADE, related_name='custom_passengers')  # Assuming CustomPackage is your package model
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Associate each passenger with a user
     status = models.CharField(max_length=20, default='Pending')  # Assuming 'Pending' is the default status
 

@@ -828,6 +828,7 @@ def upcoming_journeys(request):
     current_date = timezone.now().date()
     user = request.user
 
+    
     # Retrieve upcoming journeys for the user
     upcoming_journeys = TravelPackage.objects.filter(start_date__gt=current_date, passenger__user=user).distinct()
     # Create a list to store confirmed bookings
@@ -852,7 +853,14 @@ def upcoming_journeys(request):
             'passengers':passengers,
         })
 
-    return render(request, 'upcoming_journeys.html', {'packages_with_images': packages_with_images})
+
+
+    upcoming_custom_journeys = CustomPackage.objects.filter(
+        custom_bookings__user=user,
+        custom_bookings__start_date__gt=current_date
+    ).distinct()
+
+    return render(request, 'upcoming_journeys.html',  {'packages_with_images': packages_with_images,'upcoming_custom_journeys':upcoming_custom_journeys})
 @never_cache
 @login_required(login_url='log')
 def delete_passenger(request, passenger_id):
@@ -882,7 +890,7 @@ def passenger_details(request, package_id):
     user=request.user
     package = get_object_or_404(TravelPackage, id=package_id)
     passengers = Passenger.objects.filter(package=package,user=user)
-
+    
     return render(request, 'passenger_details.html', {'package': package, 'passengers': passengers})
 
 
@@ -1792,6 +1800,39 @@ def upcoming_custom_bookings(request):
         categorized_packages[category] = packages
 
     return render(request, 'upcoming_custom_bookings.html', {'categorized_packages': categorized_packages})
+
+
+from django.db.models import Prefetch
+
+def custom_package_requests(request, package_id):
+    # Get the selected package
+    selected_package = get_object_or_404(CustomPackage, id=package_id)
+
+    # Get the pending bookings for the selected package along with related passenger details
+    pending_bookings = CustomBooking.objects.filter(package=selected_package, status='Pending').select_related('user').prefetch_related(
+        Prefetch('custom_passengers', queryset=CustomPassenger.objects.filter(status='Pending'), to_attr='passengers')
+    )
+
+    # Retrieve user details and passenger details for pending bookings
+    user_details = []
+    for booking in pending_bookings:
+        passengers_info = [{'passenger_name': passenger.passenger_name, 'passenger_age': passenger.passenger_age} for passenger in booking.passengers]
+        
+        user_details.append({
+            'booking_id': booking.id,
+            'user': booking.user,
+            'boarding': booking.boarding,
+            'start_date': booking.start_date,
+            'passenger_limit': booking.passenger_limit,
+            'children': booking.children,
+            'package_id': package_id,
+            'status': booking.status,
+            'passengers': passengers_info,
+        })
+
+    return render(request, 'custom_package_requests.html', {'selected_package': selected_package, 'user_details': user_details})
+
+
 def verified_custom_bookings(request):
     current_date = timezone.now().date()
 
@@ -1809,16 +1850,20 @@ def verified_custom_bookings(request):
     return render(request, 'verified_custom_bookings.html', {'categorized_packages': categorized_packages})
 
 
-def custom_package_requests(request, package_id):
-    # Get the selected package
+
+from django.db.models import Prefetch
+
+def verified_custom_users(request, package_id):
     selected_package = get_object_or_404(CustomPackage, id=package_id)
 
-    # Get the pending bookings for the selected package
-    pending_bookings = CustomBooking.objects.filter(package=selected_package, status='Pending')
+    confirmed_bookings = CustomBooking.objects.filter(package=selected_package, status='Confirmed').select_related('user')
 
-    # Retrieve user details for pending bookings
     user_details = []
-    for booking in pending_bookings:
+    for booking in confirmed_bookings:
+        passengers_info = CustomPassenger.objects.filter(package=booking.package, user=booking.user, status='Confirmed').values(
+            'passenger_name', 'passenger_age'
+        )
+
         user_details.append({
             'booking_id': booking.id,
             'user': booking.user,
@@ -1826,20 +1871,30 @@ def custom_package_requests(request, package_id):
             'start_date': booking.start_date,
             'passenger_limit': booking.passenger_limit,
             'children': booking.children,
-            'package_id':package_id,
+            'package_id': package_id,
             'status': booking.status,
+            'passengers': passengers_info,
         })
 
-    return render(request, 'custom_package_requests.html', {'selected_package': selected_package, 'user_details': user_details})
+    return render(request, 'verified_custom_users.html', {'selected_package': selected_package, 'user_details': user_details})
+
+# views.py
+from django.shortcuts import render, get_object_or_404
+
+
+
+#for admin  to view all passengers who have made a custom booking under a user for a particular package.
+def custom_passengers(request, booking_id):
+    booking = get_object_or_404(CustomBooking, id=booking_id)
+    passengers = CustomPassenger.objects.filter(package=booking.package, user=booking.user)
+    
+    return render(request, 'custom_passengers.html', {'passengers': passengers})
 
 
 
 
 
 
-from .forms import SearchForm
-from .models import Place
-import requests
 
 def search_and_store_place(request):
     return render(request, 'search_and_store_place.html')
@@ -1904,3 +1959,36 @@ def update_custom_booking_status(request, user_id, package_id):
         else:
             # Handle the case where there is no matching booking
             return render(request, 'booking_not_found.html')  # Create this template
+        
+
+@never_cache
+@login_required(login_url='log')
+def custom_passenger_details(request, package_id):
+    user=request.user
+    package = get_object_or_404(CustomPackage, id=package_id)
+    passengers = CustomPassenger.objects.filter(package=package,user=user)
+    
+    return render(request, 'custom_passenger_details.html', {'package': package, 'passengers': passengers})
+
+
+@never_cache
+@login_required(login_url='log')
+def delete_custom_passenger(request, passenger_id):
+    passenger = get_object_or_404(CustomPassenger, id=passenger_id)
+
+    # Get the related booking
+    booking = CustomBooking.objects.get(package=passenger.package, user=request.user)
+
+    # Delete the passenger
+    passenger.delete()
+
+    # Update passenger_limit in the Booking model
+    booking.passenger_limit -= 1
+    booking.save()
+
+    # Update availability in the TravelPackage model
+    passenger.package.save()
+
+    # Redirect to the passenger details page or any other appropriate page
+    # You can change 'passenger_details' to the actual URL pattern name for your passenger details view
+    return redirect('passenger_custom_details', package_id=passenger.package.id)
