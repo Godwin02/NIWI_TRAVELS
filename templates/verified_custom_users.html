@@ -156,6 +156,26 @@ tr:hover {
 
 
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const toggleButtons = document.querySelectorAll(".passenger-details-toggle");
+    
+            toggleButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const bookingId = this.getAttribute("data-booking-id");
+                    const detailsDiv = document.getElementById(`passenger-details-${bookingId}`);
+    
+                    if (detailsDiv) {
+                        if (detailsDiv.style.display === "none" || detailsDiv.style.display === "") {
+                            detailsDiv.style.display = "block";
+                        } else {
+                            detailsDiv.style.display = "none";
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="sidebar">
@@ -169,7 +189,7 @@ tr:hover {
         <p>This is where you can manage users, packages, and ongoing trips.</p>
     </div>
     <div class="main-content">
-    <h1>Custom Package Requests for {{ selected_package.name }}</h1>
+    <h1>Verified Users for the Package {{ selected_package.name }}</h1>
     </div>
     
     <div class="table-container">
@@ -185,38 +205,19 @@ tr:hover {
             <th>Start Date</th>
             <th>Passenger Details</th>
             <th>Children</th>
-            <th>Verification</th>
-            <th>Update Status</th>
         </tr>
     </thead>
     <tbody>
         {% for user_detail in user_details %}
             <tr>
-                <td>{{ user_detail.user }}</td>
+                <td>{{ user_detail.user.first_name }}</td>
                 <td>{{ user_detail.boarding }}</td>
                 <td>{{ user_detail.start_date }}</td>
                 <td>
-                    <button type="button" class="passenger-details-toggle" data-booking-id="{{ user_detail.booking_id }}">Show Passengers</button>
-                    <div class="passenger-details" id="passenger-details-{{ user_detail.booking_id }}" style="display: none;">
-                        {% for passenger in user_detail.passengers %}
-                            <p>{{ passenger.passenger_name }} - {{ passenger.passenger_age }}</p>
-                        {% endfor %}
-                    </div>
+                    <button>
+                    <a style="color: inherit; text-decoration: none;" href="{% url 'custom_passengers' user_detail.booking_id %}">Show {{ user_detail.passenger_limit}} Details</a></button>
                 </td>
                 <td>{{ user_detail.children }}</td>
-                <td>{{ user_detail.status }}</td>
-                <td>
-                    <form method="post" action="{% url 'update_custom_booking_status' user_detail.user.id user_detail.package_id %}">
-                        {% csrf_token %}
-                        <select name="status">
-                            <option value="Pending" {% if user_detail.status == 'Pending' %}selected{% endif %}>Pending</option>
-                            <option value="Confirmed" {% if user_detail.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
-                            <option value="Cancelled" {% if user_detail.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                        </select>
-                        <button type="submit">Update</button>
-                    </form>
-                    
-                </td>
             </tr>
             {% empty %}
                 <tr>
@@ -228,6 +229,5 @@ tr:hover {
   </main>
 
 </div>
-
 </body>
 </html>
