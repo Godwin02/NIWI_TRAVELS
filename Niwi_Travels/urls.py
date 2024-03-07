@@ -94,6 +94,8 @@ urlpatterns = [
     path('custom_passengers/<int:booking_id>/', views.custom_passengers, name='custom_passengers'),
     path('custom_passenger_details/<int:package_id>/', views.custom_passenger_details, name='custom_passenger_details'),
     path('delete_custom_passenger/<int:passenger_id>/', views.delete_custom_passenger, name='delete_custom_passenger'),
+    path('predict_elevation/', views.predict_elevation_view, name='predict_elevation'),
+
 
     path('search/', views.search_and_store_place, name='search_and_store_place'),
     path('get_place_suggestions/', views.get_place_suggestions, name='get_place_suggestions'),

@@ -45,7 +45,6 @@ def register(request):
 
 def index(request):
     running_packages = TravelPackage.objects.filter(status='Running')
-
     return render(request, 'index.html',{'running_packages': running_packages})
 
 # Define a view to activate the user's email
@@ -857,7 +856,8 @@ def upcoming_journeys(request):
 
     upcoming_custom_journeys = CustomPackage.objects.filter(
         custom_bookings__user=user,
-        custom_bookings__start_date__gt=current_date
+        custom_bookings__start_date__gt=current_date,
+        custom_bookings__status='Pending',
     ).distinct()
 
     return render(request, 'upcoming_journeys.html',  {'packages_with_images': packages_with_images,'upcoming_custom_journeys':upcoming_custom_journeys})
@@ -1744,13 +1744,26 @@ def add_custom_passenger(request, package_id):
         passenger_name_list = request.POST.getlist('passenger_name')
         passenger_age_list = request.POST.getlist('passenger_age')
         proof_of_id_list = request.FILES.getlist('proof_of_id')
-        children=request.POST.get('children')
-        print(passenger_name_list,passenger_limit)
-            
-            # Check if the number of entries in all lists match
+        children = request.POST.get('children')
+        print(passenger_name_list,children,boarding,starting_date, passenger_limit)
+
+        # Check if the number of entries in all lists match
         if len(passenger_name_list) == len(passenger_age_list) == len(proof_of_id_list):
             total_passengers = len(passenger_name_list)
 
+            # Create and save CustomBooking instance outside the loop
+            booking = CustomBooking(
+                package_id=package_id,
+                user_id=user_id,
+                status='Pending',  # Set the status to 'Confirmed' or 'Pending' as needed
+                passenger_limit=passenger_limit,
+                children=children,
+                boarding=boarding,
+                start_date=starting_date,
+            )
+            booking.save()
+
+            # Loop through passengers and associate them with the created booking
             for i in range(total_passengers):
                 passenger_name = passenger_name_list[i]
                 passenger_age = passenger_age_list[i]
@@ -1761,28 +1774,23 @@ def add_custom_passenger(request, package_id):
                     package_id=package_id,
                     passenger_name=passenger_name,
                     passenger_age=passenger_age,
-                    proof_of_id=proof_of_id
+                    proof_of_id=proof_of_id,
+                    booking=booking,
                 )
                 passenger.save()
 
-                booking = CustomBooking(
-                package_id=package_id,
-                user_id=user_id,
-                status='Pending' , # Set the status to 'Confirmed' or 'Pending' as needed
-                passenger_limit=passenger_limit,
-                children=children,
-                boarding=boarding,
-                start_date=starting_date,
-                )
-                booking.save()
-                messages.success(request, "Your Booking Procedures have been Initialized. Stay Connected for getting further Updates.")
-
-                return redirect('/thome')
+            messages.success(request, "Your Booking Procedures have been Initialized. Stay Connected for getting further Updates.")
+            return render(request, 'add_custom_passenger.html', {'package': package, 'package_id': package_id})
+            
 
         else:
             # Handle the case where the number of entries in lists don't match
             messages.success(request, "Upload ID Proof of Number of Passengers Entered for Booking.")
-    return render(request, 'add_custom_passenger.html', {'package':package,'package_id': package_id})
+
+    return render(request, 'add_custom_passenger.html', {'package': package, 'package_id': package_id})
+
+
+
 
 
 def upcoming_custom_bookings(request):
@@ -1809,15 +1817,13 @@ def custom_package_requests(request, package_id):
     selected_package = get_object_or_404(CustomPackage, id=package_id)
 
     # Get the pending bookings for the selected package along with related passenger details
-    pending_bookings = CustomBooking.objects.filter(package=selected_package, status='Pending').select_related('user').prefetch_related(
-        Prefetch('custom_passengers', queryset=CustomPassenger.objects.filter(status='Pending'), to_attr='passengers')
-    )
+    pending_bookings = CustomBooking.objects.filter(package=selected_package, status='Pending')
 
-    # Retrieve user details and passenger details for pending bookings
     user_details = []
     for booking in pending_bookings:
-        passengers_info = [{'passenger_name': passenger.passenger_name, 'passenger_age': passenger.passenger_age} for passenger in booking.passengers]
-        
+        passengers_info = CustomPassenger.objects.filter(package=booking.package, user=booking.user, status='Confirmed').values(
+            'passenger_name', 'passenger_age'
+        )        
         user_details.append({
             'booking_id': booking.id,
             'user': booking.user,
@@ -1899,7 +1905,7 @@ def custom_passengers(request, booking_id):
 def search_and_store_place(request):
     return render(request, 'search_and_store_place.html')
 
-
+import requests
 def get_place_suggestions(request):
     term = request.GET.get('term', '')
 
@@ -1913,6 +1919,8 @@ def get_place_suggestions(request):
         }
 
         response = requests.get(endpoint, params=params)
+        response.raise_for_status()  # Raise HTTPError for bad responses
+
         data = response.json()
 
         suggestions = [{'value': place['display_name']} for place in data]
@@ -1992,3 +2000,52 @@ def delete_custom_passenger(request, passenger_id):
     # Redirect to the passenger details page or any other appropriate page
     # You can change 'passenger_details' to the actual URL pattern name for your passenger details view
     return redirect('passenger_custom_details', package_id=passenger.package.id)
+
+
+
+# views.py
+
+# views.py
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from .elevation import model, preprocess_image
+import numpy as np
+from django.shortcuts import render
+from .elevation import model, preprocess_image
+
+import base64
+
+import base64
+from io import BytesIO
+from PIL import Image
+
+
+def preprocess_image(image_content):
+    img = Image.open(BytesIO(image_content))
+    img = img.resize((224, 224))  # Resize to a consistent size
+    img_array = np.array(img) / 255.0  # Normalize pixel values to [0, 1]
+    return img_array
+
+def predict_elevation_view(request):
+    predicted_elevation = None
+    uploaded_image_base64 = None
+
+    if request.method == 'POST' and request.FILES['file']:
+        image = request.FILES['file']
+
+        # Preprocess the image
+        img_array = preprocess_image(image.read())  # Pass the binary content directly
+
+        # Make the prediction
+        prediction = model.predict(np.expand_dims(img_array, axis=0))
+
+        # Extract the predicted elevation
+        predicted_elevation = prediction[0][0]
+
+        # Encode the image in base64 for display in HTML
+        uploaded_image_base64 = base64.b64encode(image.read()).decode('utf-8')
+
+    # Render a response using a template
+    return render(request, 'upload_image.html', {'predicted_elevation': predicted_elevation, 'uploaded_image': uploaded_image_base64})
+
