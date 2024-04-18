@@ -44,7 +44,9 @@ def register(request):
     return render(request, 'register.html')
 
 def index(request):
-    running_packages = TravelPackage.objects.filter(status='Running')
+    current_date = timezone.now().date()
+
+    running_packages = TravelPackage.objects.filter(status='Running',start_date__gt=current_date,feed='Post')
 
     return render(request, 'index.html',{'running_packages': running_packages})
 

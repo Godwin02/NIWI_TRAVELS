@@ -8,7 +8,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 class User(AbstractUser):
     is_traveller = models.BooleanField(default=True)
     is_driver = models.BooleanField(default=False)
-    
+
     def _str_(self):
          return f"{self.username} ({'Traveller' if self.is_traveller else 'Driver'})"
 
@@ -80,7 +80,6 @@ class TravelPackage(models.Model):
     cancellation_policy = models.TextField()
     # booking_link = models.URLField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
-    feed = models.CharField(max_length=10, choices=FEED_CHOICES, default='Save')
 
 
     def __str__(self):
